@@ -61,52 +61,6 @@ void pre_auton() {
  * autons.cpp and declared in autons.h.
  */
 
-/**
- * red-left 1+5+L quals
- * red-left 6+L quals
- * red-left 1+6 elims
- * 
- * blue-right 1+5+L quals
- * blue-right 6+L quals
- * blue-right 1+6 elims
- * 
- * red-right 5+L quals
- * 
- * blue-left 5+L quals
- * 
- * * COMPLETED ONES
- * red-left 1+5+L quals
- * blue-right 1+5+L quals
- * red-right 5+L quals
- * blue-left 5+L quals
- * sawp
-
- * TODO:
- * goal rush autos
- * - red right
- * - blue left
- * elims
- * -  red-left 1+6 elims
- * -  blue-right 1+6 elims
- * alliance stake versions for goal side
- * 
- * 
- *   /*
-
-    red left 1-5-l
-    red left 6-l
-
-    blue right 1-5-l
-    blue right 6-l
-
-    red right 5-l
-    blue left 5-l
-
-    bsawp
-    rsawp
-*/
-
-
 void autonomous(void) {
   l.resetPosition();
   r.resetPosition();
@@ -116,34 +70,6 @@ void autonomous(void) {
   rotationSensor.resetPosition();
 
   int auton = 4;
-
-  if (auton == -1) {
-  } else if (auton == 0) {
-    red_left_1_5_ladder();
-  } else if (auton == 1) {
-    red_left_6_ladder();
-  } else if (auton == 2) {
-    blue_right_1_5_ladder();
-  } else if (auton == 3) {
-    red_left_1_5_elims();
-  } else if (auton == 4) {
-    blue_left_5_ladder();
-  } else if (auton == 5) {
-    red_right_5_ladder();
-  } else if (auton == 6) {
-    red_sawp();
-  } else if (auton == 7) {
-    blue_sawp();
-  } else if (auton == 8) {
-    blue_right_6_ladder();
-  } else if (auton == 9) {
-    blue_right_1_5_elims();
-  } else if (auton == 10) {
-    skills();
-  }
-  // } else if (auton == 7) 
-  //   SKILLS();S
-  // }
 }
 
 /*---------------------------------------------------------------------------*/
