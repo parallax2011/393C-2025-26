@@ -2,23 +2,11 @@
 
 void default_constants();
 
-// ring side
-void red_left_1_5_ladder();
-void red_left_6_ladder();
-void red_left_1_5_elims();
-void blue_right_1_5_ladder();
-void blue_right_6_ladder();
-void blue_right_1_5_elims();
+void setHeadingConst(float max, float kp, float kd);
 
-// goal side
-void blue_left_5_ladder(); 
-void red_right_5_ladder();
+void auto2();
 
-// awp
-void red_sawp();
-void blue_sawp();
+void autoLeft(std::string alliance);
+void autoRight(std::string alliance);
 
-// rush
-void blue_left_goal_rush();
-
-void skills();
+void autoSkills();

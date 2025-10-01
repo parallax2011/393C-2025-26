@@ -43,6 +43,12 @@ extern Drive chassis;
 //using namespace vex;
 using namespace std;
 
+
+void filter_block();
+
+void filter_red();
+void filter_blue();
+
 #define waitUntil(condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \

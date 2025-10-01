@@ -167,16 +167,16 @@ public:
   void holonomic_drive_to_pose(float X_position, float Y_position, float angle, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout);
   void holonomic_drive_to_pose(float X_position, float Y_position, float angle, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
 
-  void control_arcade();
-  void control_tank();
-  void control_holonomic();
+  void arcade(int deadzone, bool curve, int power);
+  void tank();
+  void holonomic();
 };
 
 // chassis
 void moveChassis(float left, float right);
 
 // intake
-void moveIntake(float volts);
+void moveIntake2(float volts);
 
 // lift
 void moveLift(float position, float vel);

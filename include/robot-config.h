@@ -15,19 +15,22 @@ extern motor lb;
 extern motor rf;
 extern motor rm;
 extern motor rb;
-extern motor intake;
-extern motor lift;
+
+extern motor inl;
+extern motor inu;
+extern motor inb;
+
+extern motor_group intake;
 extern motor_group l;
 extern motor_group r;
 
 // sensors
 extern inertial imu;
 extern optical optic;
-extern rotation rotationSensor;
 
 // pneumatics
-extern digital_out mogo;
-extern digital_out doink;
-extern digital_out intakePiston;
+extern digital_out scraper;
+extern digital_out descorer;
+extern digital_out parker;
 
 void  vexcodeInit( void );

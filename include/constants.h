@@ -9,12 +9,13 @@
 #define TURN_CURVE_SCALE 15
 
 // optical
+#define MIN_OUTTAKE_TIME 1000
 
 // color signatures
 #define RED_LOWER_LIM 0
-#define RED_UPPER_LIM 15
+#define RED_UPPER_LIM 30
 #define BLUE_LOWER_LIM 203
-#define BLUE_UPPER_LIM 230
+#define BLUE_UPPER_LIM 250
 
 // lift
 #define LIFT_VEL 100
@@ -28,7 +29,7 @@
 #define DRIVE_MAX 12
 #define DRIVE_KP 1.2
 #define DRIVE_KI 0
-#define DRIVE_KD 8
+#define DRIVE_KD 4.5
 #define DRIVE_STARTI 0
 #define DRIVE_SETTLE_ERROR 1.5
 #define DRIVE_SETTLE_TIME 300

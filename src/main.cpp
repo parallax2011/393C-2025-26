@@ -1,7 +1,16 @@
 #include "vex.h"
+#include <iostream>
+#include <string>
+#include <array>
+#include <sstream>  
+#include <vector>
+#include <typeinfo>
+#include <functional>
+
 
 using namespace vex;
 competition Competition;
+
 
 /**
  * Function before autonomous. It prints the current auton number on the screen
@@ -10,48 +19,51 @@ competition Competition;
  * be more descriptive, if you like.
  */
 
-int auton = 0;
+//int auton = 0;
+bool auto_started = false;
+
+thread t1283789;
 
 void telemetry() {
-  while (1) {
-    // std::cout << "heading:          " << chassis.get_absolute_heading() << std::endl;
-    // std::cout << "drive:            " << l.voltage() << std::endl;
-    // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
+    while (1) {
+        std::cout << "pos:              " << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
+        std::cout << "heading:          " << imu.rotation() << std::endl;
+        // std::cout << "drive:            " << (l.position(deg) + r.position(deg))/2 << std::endl;
+        // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
 
-    //std::cout << "Direction:              " << intake.direction() << std::endl;
-    std::cout << "Position [deg]:         " << intake.position(deg) << std::endl;
-    std::cout << "Velocity [pct]:         " << intake.velocity(pct) << std::endl;
-    std::cout << "Current [pct]:          " << intake.current(pct) << std::endl;
-    std::cout << "Power [watt]:           " << intake.power(watt) << std::endl;
-    std::cout << "Torque [Nm]:            " << intake.torque(Nm) << std::endl;
-    std::cout << "Efficiency [pct]:       " << intake.efficiency(pct) << std::endl;
-    std::cout << "Voltage [volt]:         " << intake.voltage() << std::endl;
-    std::cout << "Value:                  " << intake.value() << std::endl;
-    std::cout << std::endl << std::endl;
+        //std::cout << "Direction:              " << intake.direction() << std::endl;
+        // std::cout << "Position [deg]:         " << intake.position(deg) << std::endl;
+        // std::cout << "Velocity [pct]:         " << intake.velocity(pct) << std::endl;
+        // std::cout << "Current [pct]:          " << intake.current(pct) << std::endl;
+        // std::cout << "Power [watt]:           " << intake.power(watt) << std::endl;
+        // std::cout << "Torque [Nm]:            " << intake.torque(Nm) << std::endl;
+        // std::cout << "Efficiency [pct]:       " << intake.efficiency(pct) << std::endl;
+        // std::cout << "Voltage [volt]:         " << intake.voltage() << std::endl;
+        // std::cout << std::endl << std::endl;
 
-
-    //std::cout << "velocity:         " << (l.voltage() + r.voltage()) / 2 << std::endl << std::endl;
-    //std::cout << "output:           " << chassis.
-    //std::cout << "drive temp:       " << l.temperature() << std::endl;
-    //std::cout << "intake temp:      " << i ntake.temperature(celsius) << std::endl;
-    //std::cout << "intake vel:       " << intake.voltage() << std::endl;
-    //std::cout << "lift position:    " << lift.position(deg) << std::endl;
-    wait(500, msec);
-  }
+        //std::cout << "velocity:         " << (l.voltage() + r.voltage()) / 2 << std::endl << std::endl;
+        //std::cout << "output:           " << chassis.
+        //std::cout << "drive temp:       " << l.temperature() << std::endl;
+        //std::cout << "intake temp:      " << i ntake.temperature(celsius) << std::endl;
+        //std::cout << "intake vel:       " << intake.voltage() << std::endl;
+        //std::cout << "lift position:    " << lift.position(deg) << std::endl;
+        wait(500, msec);
+    }
 }
 
 void pre_auton() {
-  // Initializing Robot Configuration. DO NOT REMOVE!
-  vexcodeInit();
-  default_constants();
+    // Initializing Robot Configuration. DO NOT REMOVE!
+    vexcodeInit();
+    default_constants();
 
-  //telemetry();
+    telemetry();
+    imu.calibrate(3000);
+    wait(3000, msec);
 
-  imu.calibrate(3000);
-  wait(3000, msec);
+    optic.setLight(ledState::on);
+    optic.setLightPower(100);
 
-  optic.setLight(ledState::on);
-  optic.setLightPower(100);
+    optic.objectDetectThreshold(10);
 }
 
 /**
@@ -62,14 +74,35 @@ void pre_auton() {
  */
 
 void autonomous(void) {
-  l.resetPosition();
-  r.resetPosition();
-  lift.resetPosition();
-  imu.resetHeading();
-  imu.resetRotation();
-  rotationSensor.resetPosition();
+    l.resetPosition();
+    r.resetPosition();
+    imu.resetHeading();
+    imu.resetRotation();
 
-  int auton = 4;
+    auto2();
+}
+
+int auton(string selectedAuton) {
+    controller1.Screen.clearScreen();
+    controller1.Screen.setCursor(1,1);
+    auto_started = true;
+    if (selectedAuton == "Skills") {
+        autoSkills();
+        return 0;
+    } else if (selectedAuton == "Red Left") {
+        autoLeft("red");
+        return 1;
+    } else if (selectedAuton == "Red Right") {
+        autoRight("red");
+        return 2;
+    } else if (selectedAuton == "Blue Left") {
+        autoLeft("blue");
+        return 3;
+    } else if (selectedAuton == "Blue Right") {
+        autoRight("blue");
+        return 4;
+    }
+    return 0;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -82,99 +115,466 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-float liftRotation = rotationSensor.angle(deg);
+bool enableIntake = true;
+bool filtering = false;        // filter mode active?
+int filterTimer = 0;           // when to stop filtering
 
-bool liftOverride = false;
-
-void moveLiftTo(float position) {
-
-  lift.setVelocity(100, pct);
-
-  liftOverride = true;
-
-  //lift.setVelocity(100, percent);
-  float error = position - liftRotation;
-  lift.spinToPosition(error, degrees);
-
-  lift.stop(hold);
-  liftOverride = false;
+// start filter eject, but non-blocking
+void filter_block() {
+    filtering = true;
+    filterTimer = timer::system() + 400; // run for 1.5s
 }
 
-void lr() { moveLiftTo(0); rotationSensor.resetPosition(); }
-void lg() { moveLiftTo(135); }
-void ls() { moveLiftTo(647); }
-
-void liftResetMacro() { thread liftReset = thread(lr); }
-void liftGrabMacro() { thread liftGrab = thread(lg); }
-void liftScoreMacro() { thread liftScore = thread(ls); }
-
-void usercontrol(void) {
-  bool newL1 = false; bool newL2 = false;
-
-  l.setStopping(coast); 
-  r.setStopping(coast);
-  intakePiston.set(false);
-
-  while (1) {
-
-    // chassis
-    chassis.control_arcade();
-
-    // intake fwd
-    if (controller1.ButtonL1.pressing()) 
-      newL1 = true;
-    else 
-      newL1 = false;
-
-    // intake rev
-    if (controller1.ButtonL2.pressing())
-      newL2 = true;
-    else
-      newL2 = false;
+void get_block(std::string targetColor) {
+    // initialization
+    optic.integrationTime(5);
+    while (1) {
+        optic.setLight(ledState::on);
+        optic.setLightPower(100);
     
-    // lift
-    if (!liftOverride) {
+        if (optic.isNearObject()) {
+            if (optic.isNearObject()) {
+                // if we are on blue team
+                if (targetColor == "red") {
+                    if ((optic.hue() > RED_LOWER_LIM) && (optic.hue() < RED_UPPER_LIM)) {
+                        if ((optic.hue() > RED_LOWER_LIM) && (optic.hue() < RED_UPPER_LIM)) {
+                            filter_block();
+                        }
+                    }
+                }
 
-      if (((controller1.ButtonL1.pressing() && newL2) || (newL1 && controller1.ButtonL2.pressing())) ||
-          ((newL1 && newL2) || (controller1.ButtonL1.pressing() && controller1.ButtonL2.pressing()))) {
-        lift.spin(fwd, 12, volt);
-        moveIntake(0);
-      } else if (controller1.ButtonL1.pressing()) {
-        moveIntake(12);
-      } else if (controller1.ButtonL2.pressing()) {
-        moveIntake(-12);
-      } else {
-        moveIntake(0);
-        lift.stop(hold);
-      }
+                // if we are on red team
+                else if (targetColor == "blue") {
+                    if ((optic.hue() > BLUE_LOWER_LIM) && (optic.hue() < BLUE_UPPER_LIM)) {
+                        if ((optic.hue() > BLUE_LOWER_LIM) && (optic.hue() < BLUE_UPPER_LIM)) {
+                            filter_block();
+                        }
+                    }
+                }
+            }
+        } else {
+
+        }
+    }
+}
+bool STATE = false;
+
+void ctrlKillSwitch() {
+    STATE = !STATE;
+    if (STATE) {
+        t1283789.interrupt();
+        controller1.Screen.clearScreen();
+        controller1.Screen.setCursor(1,1);
+        controller1.Screen.print("NO SORTING");
+    } else {
+        t1283789 = thread(filterRed);
+        controller1.Screen.clearScreen();
+        controller1.Screen.setCursor(1,1);
+        controller1.Screen.print("YES SORTING");
     }
 
-    wait(20, msec);
-  }
 }
+//false = blue;
+
+void filter_blue() { get_block("blue"); }
+void filter_red() { get_block("red"); }
+
+void usercontrol(void) {
+
+    l.setStopping(coast); 
+    r.setStopping(coast);
+
+    optic.setLight(ledState::on);
+    optic.setLightPower(100);
+    optic.objectDetectThreshold(50);
+
+    t1283789 = thread(filterRed);
+
+    while (1) {
+
+        // chassis
+        arcade();
+
+        // double park
+        if (controller1.ButtonX.pressing() and controller1.ButtonL1.pressing()) {
+            ctrlPark();
+            while (controller1.ButtonX.pressing() and controller1.ButtonL1.pressing()) {
+                wait(20, msec);
+            }
+        }
+        // if (controller1.ButtonRight.pressing()) {
+        //     ctrlSortSwap();
+        //     while (controller1.ButtonRight.pressing()) {
+        //         wait(20, msec);
+        //     }
+        // }
+        
+        // intake
+        else if (controller1.ButtonR1.pressing() and !(controller1.ButtonL1.pressing()) and filtering) {
+            // run filter eject
+            inl.spin(fwd, 12, volt);
+            inu.spin(fwd, -12, volt);
+
+            if (vex::timer::system() > filterTimer) {
+                filtering = false;
+                moveIntake(0, 0, 0); //stop for adjustment
+            }
+        }
+
+        // lower goal
+        else if (controller1.ButtonR1.pressing() and controller1.ButtonL1.pressing()) {
+            //lowGoal();
+            lowGoal();//moveIntake(-6, 0, 6);
+
+        // basket
+        } else if (controller1.ButtonR1.pressing() and !(controller1.ButtonL1.pressing()) and (enableIntake == true)) {
+            basket();
+
+        // upper goal
+        } else if (controller1.ButtonR2.pressing() and controller1.ButtonL1.pressing()) {
+            highGoal();//moveIntake(6, -6, 10);
+
+        // long goal
+        } else if (controller1.ButtonR2.pressing() and !(controller1.ButtonL1.pressing())) {
+            longGoal();
+
+        // intake off         
+        } else {
+            moveIntake(0, 0, 0);
+        }
+
+        wait(20, msec);
+    }
+}
+
+// std::string sortedColor = "none";
+
+// void sortingMenu() {
+//     while (1) {
+//         controller1.Screen.clearScreen();
+//         controller1.Screen.setCursor(1, 1);
+//         controller1.Screen.print("Sorting: %s", sortedColor.c_str());
+//         controller1.Screen.newLine();
+//         controller1.Screen.print("Select: A");
+
+//         if (controller1.ButtonRight.pressing()) {
+//             while (controller1.ButtonRight.pressing() != false){
+//                 if (sortedColor == "red") {
+//                     sortedColor = "blue"; //Change variable depending on button press
+//                 } else {
+//                     sortedColor = "red";
+//                 }
+//             }
+//         }
+
+//         if (controller1.ButtonDown.pressing()) {
+//             sortedColor = "none";
+//         }
+
+//         if (controller1.ButtonA.pressing()) {
+//             break;
+//         }
+//     }
+// }
+
+// string selectedAuton;
+
+// string autonMenu() {
+//     int autoPosition = 0;
+//     bool autoSelected = false;
+//     string autons[] = {"Skills", "Red Left", "Red Right", "Blue Left", "Blue Right"};
+
+//     while (!autoSelected) {
+        
+//         if (controller1.ButtonRight.pressing()) {
+//             while (controller1.ButtonRight.pressing()) {}
+//             if (autoPosition != end(autons) - begin(autons) - 1) {
+//                 autoPosition++;
+//             }
+//         }
+
+//         if (controller1.ButtonLeft.pressing()) {
+//             while (controller1.ButtonLeft.pressing()) {}
+//             if (autoPosition != 0) {
+//                 autoPosition--;
+//             }
+//         }
+
+//         if (controller1.ButtonA.pressing()) {
+//             sortingMenu(); //Run color sort menu
+//             return autons[autoPosition];
+//         }
+
+//         controller1.Screen.clearScreen();
+//         controller1.Screen.setCursor(1,1);
+//         ostringstream autonnum;
+//         autonnum << autoPosition + 1;
+//         string displayauto="Selecting "+autonnum.str()+". "+autons[autoPosition]; //Display selected auton
+//         controller1.Screen.print(displayauto.c_str());
+//         controller1.Screen.newLine();
+//         controller1.Screen.print("Select: A");
+//     }
+//     return autons[autoPosition];
+// }
+
+// bool compMode = false;
+
+// int selectAuton() {
+//     bool driverControl = false;
+//     //bool autoSetupMenu = false;
+
+//     // display options on controller
+//     controller1.Screen.clearScreen();
+//     controller1.Screen.setCursor(1, 1);
+//     controller1.Screen.print(" Comp: A");
+//     controller1.Screen.newLine();
+//     controller1.Screen.print(" Test: B");
+//     controller1.Screen.newLine();
+//     controller1.Screen.print(" Run:  Y");
+
+//     while (1) {
+//         if (controller1.ButtonA.pressing()) { //Check for each button pressed
+//             compMode = true;
+//             break;
+//         }
+//         if (controller1.ButtonB.pressing()) {
+//             compMode = false;
+//             break;
+//         }
+//         if (controller1.ButtonY.pressing()) {
+//             driverControl = true;
+//             break;
+//         }
+//         // if (controller1.ButtonX.pressing()) {
+//         // autonsetupmenu=true;
+//         // break;
+//         // }
+//     }
+//     if (driverControl) { //Run driver control
+//         usercontrol();
+//         return 0;
+//     }
+//     // if (autonsetupmenu==true) { //Run auton setup Menu
+//     //     autonsetup_menu();
+//     //     return 0;
+//     // }
+//     wait(250, msec);
+//     selectedAuton = autonMenu(); //Select auton
+    
+//     controller1.Screen.clearScreen();
+//     controller1.Screen.setCursor(1,1);
+//     string displayedAuton = "Run \"" + selectedAuton + "\"?";
+//     controller1.Screen.print(displayedAuton.c_str());
+//     controller1.Screen.newLine();
+//     controller1.Screen.print("Confirm: A"); //Confirmation
+    
+//     while (true) {
+//         if (controller1.ButtonA.pressing()) {
+//             return 0;
+//         }
+//     }
+
+// }
+
+// string autons[] = {"Skills", "Red Left", "Red Right", "Blue Left", "Blue Right"};
+
+// int auton(string selectedAuton) {
+//     if (selectedAuton == "Skills") {
+//         return 0;
+//     } else if (selectedAuton == "Red Left") {
+//         return 1;
+//     } else if (selectedAuton == "Red Right") {
+//         return 2;
+//     } else if (selectedAuton == "Blue Left") {
+//         return 3;
+//     } else if (selectedAuton == "Blue Right") {
+//         return 4;
+//     }
+// }
+
+// bool compMode = false;
+
+// string auton_menu() {
+//     int autoPos = 0;
+//     bool autoSelected = false;
+
+//     while (!autoSelected) {
+        
+//         if (controller1.ButtonRight.pressing()) {
+//             while (controller1.ButtonRight.pressing()) {}
+//             if (autoPos != end(autons) - begin(autons) - 1) {
+//                 autoPos ++;
+//             }
+//         }
+
+//         if (controller1.ButtonLeft.pressing()) {
+//             while (controller1.ButtonLeft.pressing()) {}
+//             if (autoPos != 0) {
+//                 autoPos --;
+//             }
+//         }
+
+//         controller1.Screen.clearScreen();
+//         controller1.Screen.setCursor(1,1);
+//         ostringstream autonnum;
+//         autonnum << autoPos + 1;
+//         string displayauto="Selecting "+autonnum.str()+". "+autons[autoPos]; //Display selected auton
+//         controller1.Screen.print(displayauto.c_str());
+//         controller1.Screen.newLine();
+//         controller1.Screen.print("A to select");
+//         //Controller.Screen.newLine();
+//         //Controller.Screen.print("Inertial Rotation: %f",Inertial.heading(deg));
+//     }
+// }
+
+// int selectAuton() {
+//     bool driverControl = false;
+
+//     // display options on controller
+//     controller1.Screen.clearScreen();
+//     controller1.Screen.setCursor(1, 1);
+//     controller1.Screen.print(" Comp  A");
+//     controller1.Screen.newLine();
+//     controller1.Screen.print(" Test   B");
+//     controller1.Screen.newLine();
+//     controller1.Screen.print(" Driver Y");
+
+
+//     while (1) {
+//         if (controller1.ButtonA.pressing()) {
+//             compMode = true; break;
+//         } if (controller1.ButtonB.pressing()) {
+//             compMode = false; break;
+//         } if (controller1.ButtonY.pressing()) {
+//             driverControl = true; break;
+//         }
+//     }
+
+//     if (driverControl) {
+//         usercontrol(); return 0;
+//     }
+
+//     wait(250, msec);
+//     selectedAuton = autonMenu();
+
+//     controller1.Screen.clearScreen();
+//     controller1.Screen.setCursor(1,1);
+//     string autondisplayed = "Run \"" + selectedAuton + "\"?";
+//     controller1.Screen.print(autondisplayed.c_str());
+//     controller1.Screen.newLine();
+//     controller1.Screen.print("Confirm A");
+  
+//     while (1) {
+//         if (controller1.ButtonA.pressing()) {
+//             return 0;
+//         }
+//     }
+// }
 
 //
 // Main will set up the competition functions and callbacks.
 //
+
 int main() {
-  // Set up callbacks for autonomous and driver control periods.
+    // Set up callbacks for autonomous and driver control periods.
+    Competition.autonomous(autonomous);
+    Competition.drivercontrol(usercontrol);
+
+    
+    controller1.ButtonY.pressed(ctrlScraper);
+    controller1.ButtonL2.pressed(ctrlDescorer);
+    controller1.ButtonDown.pressed(ctrlKillSwitch);
+    // controller1.ButtonRight.pressed(ctrlSortSwap);
+
+    // vexcodeInit();
+    // default_constants();
+    // optic.setLightPower(100, percent); 
+    // optic.setLight(ledState::on); 
+    // Brain.Screen.clearScreen();
+
+    // cout << "033[2J";
+
+    // // For each horizontal row in the frame
+ 
   
-  controller1.ButtonR1.pressed(controlMogo);
-  controller1.ButtonR2.pressed(controlDoink);
-  controller1.ButtonDown.pressed(controlIntakePiston);
+    // //  Brain.Screen.drawIma geFromBuffer(&fishy,0,0,fishy.size());
+    // //#include "image.h"
+    // // Brain.Screen.drawImageFromBuffer(image, 100, 0, sizeof(image));
 
-  controller1.ButtonA.pressed(liftResetMacro);
-  controller1.ButtonX.pressed(liftGrabMacro);
-  controller1.ButtonY.pressed(liftScoreMacro);
+    // imu.calibrate();
+    // // Set up callbacks for autonomous and driver control periods.
+    // intake.setVelocity(100, pct);
 
-  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
+    // l.resetPosition();
+    // r.resetPosition();
+    // imu.resetHeading();
+    // imu.resetRotation();
 
-  // Run the pre-autonomous function.
-  pre_auton();
+    // selectAuton();
+    // if (compMode) {
+    //     controller1.Screen.clearScreen();
+    //     controller1.Screen.setCursor(1,1);
+    //     controller1.Screen.print("Waiting to start...");
+    //     while (1) { //check if comp switch enabled for auton
+    //         wait(50, msec);
+    //         if (Competition.isAutonomous() && Competition.isEnabled()){
+    //             break;
+    //         }
+    //     }
+    //     auton(selectedAuton);
+    //     while (1) { //check if comp switch enabled for driver
+    //         wait(50, msec);
+    //         if (Competition.isDriverControl() && Competition.isEnabled()){
+    //             break;
+    //         }
+    //     }
+    //     usercontrol();
+    // } else { //Regular/test mode
+    //     cout << "Run";
+    //     int autonRun = auton(selectedAuton); //run auton
+    //     if (autonRun != 2){
+    //         usercontrol(); //Instantly run auton
+    //     }        
+    // }
 
-  // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-  }
+
+    // selectAuton();
+    
+    // if (compMode) {
+    //     controller1.Screen.clearScreen();
+    //     controller1.Screen.setCursor(1,1);
+    //     controller1.Screen.print("Starting soon...");
+    
+    //     while (1) { // check if comp switch enabled for auton
+    //         wait(50, msec);
+    //         if (Competition.isAutonomous() and Competition.isEnabled()){
+    //             break;
+    //         }
+    //     }
+    //     autonomous(selectedAuton);
+        
+    //     while (1) { //check if comp switch enabled for driver
+    //         wait(50, msec);
+    //         if (Competition.isDriverControl() and Competition.isEnabled()){
+    //             break;
+    //         }
+    //     }
+
+    //     usercontrol();
+
+    // } else { // regular/test mode
+    //     cout << "Run";
+    //     int runAuton = autonomous(selectedAuton); // run auton
+    //     if (runAuton != 2) {
+    //         usercontrol();
+    //     }        
+    // }
+
+    // Run the pre-autonomous function.
+    pre_auton();
+
+    // Prevent main from exiting with an infinite loop.
+    while (true) {
+        wait(100, msec);
+    }
 }

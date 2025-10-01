@@ -301,7 +301,7 @@ void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle
     float output = turnPID.compute(error);
     output = clamp(output, -turn_max_voltage, turn_max_voltage);
     drive_with_voltage(output, -output);
-    //std::cout << absHeading << '\n';
+    //std::cout << "Ang: " << get_absolute_heading() << std::endl;
     task::sleep(10);
   }
   std::cout << "Ang: " << get_absolute_heading() << std::endl;
@@ -364,13 +364,14 @@ void Drive::drive_distance(float distance, float heading, float drive_max_voltag
     heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
 
     drive_with_voltage(drive_output + heading_output, drive_output - heading_output);
-    //std::cout << "Pos: " << average_position << std::endl;
+    //std::cout << "Ang: " << get_absolute_heading() << std::endl;
     
     //std::cout << "Vel: " << drive_output << std::endl << std::endl;
 
     task::sleep(10);
   }
   std::cout << "Pos: " << average_position << std::endl;
+  //std::cout << "Ang: " << get_absolute_heading() << std::endl;
 
   l.resetPosition();
   r.resetPosition();
@@ -755,10 +756,30 @@ void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float an
  * Default deadband is 5.
  */
 
-void Drive::control_arcade(){
-  float throttle = deadband(controller(primary).Axis3.value(), 5);
-  float rate = deadband(controller(primary).Axis1.value(), 5);
-  float turn = (abs(rate) * rate) / 100;
+void Drive::arcade(int deadzone, bool curve, int power) {
+  
+  float throttle;
+  float turn;
+
+  if (deadzone <= 0) {
+    throttle = controller(primary).Axis3.value();
+    turn = controller(primary).Axis1.value();
+  } else {
+    throttle = deadband(controller(primary).Axis3.value(), deadzone);
+    turn = deadband(controller(primary).Axis1.value(), deadzone);
+  }
+
+  if (curve) {
+    if (power == 2) {
+        turn = (abs(turn) * turn) / 100;
+    } else if (power == 3) {
+        turn = (pow(turn, 3) / 100);
+    } else if (power >= 4) {
+        // t=40
+        turn = std::exp(((std::abs(turn)-100) * 40)/1000) * turn;
+    }
+  }
+
   DriveL.spin(fwd, to_volt(throttle + turn), volt);
   DriveR.spin(fwd, to_volt(throttle - turn), volt);
 }
@@ -768,7 +789,7 @@ void Drive::control_arcade(){
  * Default deadband is 5.
  */
 
-void Drive::control_holonomic(){
+void Drive::holonomic(){
   float throttle = deadband(controller(primary).Axis3.value(), 5);
   float turn = deadband(controller(primary).Axis1.value(), 5);
   float strafe = deadband(controller(primary).Axis4.value(), 5);
@@ -783,7 +804,7 @@ void Drive::control_holonomic(){
  * Default deadband is 5.
  */
 
-void Drive::control_tank(){
+void Drive::tank(){
   float leftthrottle = deadband(controller(primary).Axis3.value(), 5);
   float rightthrottle = deadband(controller(primary).Axis2.value(), 5);
   DriveL.spin(fwd, to_volt(leftthrottle), volt);
@@ -806,7 +827,6 @@ void moveChassis(float left, float right) {
   r.spin(fwd, right, volt);
 }
 
-
 float curve(float i, float scale) {
   if (scale != 0)
     return (pow(2.718, (scale * ((std::fabs(x) - 100))) / 1000 ) * i);
@@ -814,25 +834,4 @@ float curve(float i, float scale) {
 }
 
 // intake
-void moveIntake(float volts) { intake.spin(fwd, volts, volt); }
-
-// lift
-void moveLift(float position, float vel) {
-  lift.setVelocity(vel, pct);
-  lift.spinToPosition(position, degrees);
-}
-
-// lift controls
-void lift_reset() { 
-  moveLift(0, 100);
-  lift.resetPosition();
-}
-
-void lift_grab() { moveLift(LIFT_GRAB_POS, 100); }
-void lift_score() { moveLift(LIFT_SCORE_POS, 100); }
-void liftMax() { lift.spin(fwd, 12, volt); }
-
-void intakeMaxFWD() { moveIntake(12); }
-void intakeMaxREV() { moveIntake(-12); }
-void intakeStop() { moveIntake(0); }
-void liftCoast() { lift.stop(hold); }
+void moveIntake2(float volts) { intake.spin(fwd, volts, volt); }
