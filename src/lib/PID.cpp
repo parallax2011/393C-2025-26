@@ -102,7 +102,7 @@ float PID::compute(float error) {
 
     previous_error = error;
 
-    if(fabs(error) < settle_error) {
+    if (fabs(error) < settle_error) {
         time_spent_settled += 10;
     } else {
         time_spent_settled = 0;

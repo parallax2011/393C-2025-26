@@ -31,54 +31,7 @@ void moveIntake(int inlv, int inuv, int inbv) {
   inb.spin(fwd, inbv, volt);
 }
 
-void lowGoal() { moveIntake(-12, 0, 12); }
-void basket() { moveIntake(12, 12, -12); }
-void highGoal() { moveIntake(12, -12, 12); }
-void longGoal() { moveIntake(12, 12, 12); }
-
-// class Intake {
-// public:
-
-//     void move(float inlv, float inuv, float inbv) {
-//         inl.spin(fwd, inlv, volt);
-//         inu.spin(fwd, inuv, volt);
-//         inb.spin(fwd, inbv, volt);
-//     }
-
-//     class Lower {
-//     private:
-//         motor& inl;
-//     public:
-//         Lower(motor& motorRef) : inl(motorRef) {}
-//         void move(int volts) {
-//             inl.spin(fwd, volts, volt);
-//         }
-//     };
-
-//     class Upper {
-//     private:
-//         motor& inu;
-//     public:
-//         Upper(motor& motorRef) : inu(motorRef) {}
-//         void move(int volts) {
-//             inu.spin(fwd, volts, volt);
-//         }
-//     };
-
-//     class Back {
-//     private:
-//         motor& inb;
-//     public:
-//         Back(motor& motorRef) : inb(motorRef) {}
-//         void move(int volts) {
-//             inb.spin(fwd, volts, volt);
-//         }
-//     };
-
-//     Lower l;
-//     Upper u;
-//     Back b;
-
-//     Intake(motor& inl, motor& inu, motor& inb)
-//         : l(inl), u(inu), b(inb) {}
-// };
+void lowGoal() { pto.set(false); moveIntake(-9, 0, 9); }
+void basket() { pto.set(false); moveIntake(12, 12, -12); }
+void highGoal() { pto.set(true); moveIntake(12, -12, 12); }
+void longGoal() { pto.set(false); moveIntake(12, 12, 12); }

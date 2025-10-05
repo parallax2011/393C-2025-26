@@ -32,5 +32,6 @@ extern optical optic;
 extern digital_out scraper;
 extern digital_out descorer;
 extern digital_out parker;
+extern digital_out pto;
 
 void  vexcodeInit( void );

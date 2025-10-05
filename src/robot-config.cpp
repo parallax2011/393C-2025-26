@@ -25,14 +25,9 @@ Drive chassis(ZERO_TRACKER_NO_ODOM, // drive setup
               5.5 // sideways tracker center distance
 );
 
-// A global instance of brain used for printing to the V5 Brain screen.
 brain Brain;
 controller controller1;
 
-//The motor constructor takes motors as (port, ratio, reverse), so for example
-//motor LeftFront = motor(PORT1, ratio6_1, false);
-
-//Add your devices below, and don't forget to do the same in robot-config.h:
 #define RED ratio36_1
 #define GREEN ratio18_1
 #define BLUE ratio6_1
@@ -72,11 +67,12 @@ motor_group intake = motor_group(inl, inu, inb);
 // sensors
 inertial imu = inertial(PORT_IMU);
 optical optic = optical(PORT_OPTICAL);
-
+ 
 // pneumatics
 digital_out scraper = digital_out(Brain.ThreeWirePort.A);
 digital_out descorer = digital_out(Brain.ThreeWirePort.B);
 digital_out parker = digital_out(Brain.ThreeWirePort.C);
+digital_out pto = digital_out(Brain.ThreeWirePort.F);
 
 void vexcodeInit( void ) {
   // nothing to initialize
