@@ -34,4 +34,9 @@ void moveIntake(int inlv, int inuv, int inbv) {
 void lowGoal() { pto.set(false); moveIntake(-9, 0, 9); }
 void basket() { pto.set(false); moveIntake(12, 12, -12); }
 void highGoal() { pto.set(true); moveIntake(12, -12, 12); }
+void manualSort() { moveIntake(12, -12, 0); }
 void longGoal() { pto.set(false); moveIntake(12, 12, 12); }
+
+void ctrlSort() {
+    manualSort();
+}

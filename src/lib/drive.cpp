@@ -373,8 +373,8 @@ void Drive::drive_distance(float distance, float heading, float drive_max_voltag
   std::cout << "Pos: " << average_position << std::endl;
   //std::cout << "Ang: " << get_absolute_heading() << std::endl;
 
-  l.resetPosition();
-  r.resetPosition();
+//   l.resetPosition();
+//   r.resetPosition();
 //   l.stop(coast);
 //   r.stop(coast);
 }

@@ -12,6 +12,8 @@ void lowGoal();
 void basket();
 void highGoal();
 void longGoal();
+
+void ctrlSort();
     
 // public:
 //   float error = 0;

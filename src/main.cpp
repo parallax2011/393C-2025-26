@@ -80,7 +80,6 @@ void autonomous(void) {
     imu.resetRotation();
 
     //LEFT_6LG_DESCORE();
-    //RIGHT_DESCORE();
     autoSkills();
 }
 
@@ -349,6 +348,7 @@ int main() {
 
     
     controller1.ButtonY.pressed(ctrlScraper);
+    controller1.ButtonB.pressed(ctrlSort);
     controller1.ButtonL2.pressed(ctrlDescorer);
     controller1.ButtonDown.pressed(ctrlKillSwitch);
 
