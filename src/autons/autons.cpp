@@ -283,7 +283,7 @@ void autoSkills() {
     wait(300, msec);
     scraper.set(false);
     wait(20, msec);
-    chassis.turn(85);
+    chassis.turn(90);
     longGoal();
     chassis.move(13.5, 7);
     wait(2000, msec);
@@ -295,14 +295,14 @@ void autoSkills() {
     chassis.set_drive_constants(9, 1.2, 0, 4.5, 0);
     chassis.drive_timeout = 3000;
     setHeadingConst(9, 0.3, 1.7);
-    chassis.arc(-18, 180);
+    chassis.arc(-35.5, 0);
     chassis.turn(90);
-    chassis.move(28, 4);
+    chassis.move(40, 4);
 
     // go to match loader 2
-    descorer.set(true);
-    chassis.turn(85);
-    chassis.move(30);
+    // descorer.set(true);
+    // chassis.turn(85);
+    // chassis.move(30);
 
     // chassis.move(35);
     // wait(2000, msec);
