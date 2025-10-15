@@ -258,9 +258,9 @@ void autoRight(std::string alliance) {
 
 void autoSkills() {
     chassis.set_drive_exit_conditions(1.5, 200, 2000);
-    chassis.set_turn_exit_conditions(0.5, 300, 2000);
+    chassis.set_turn_exit_conditions(1, 200, 1000); //0.5,300,2000
 
-    auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(T);
+    auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
 
     chassis.set_drive_exit_conditions(0.5, 200, 2000);
     chassis.set_turn_constants(12, 0.3, 0, 2, 15);
@@ -272,10 +272,10 @@ void autoSkills() {
     basket();
     wait(300, msec);
     // auto t1 = []() { scraper.set(true); }; thread T1 = thread(t1);
-    chassis.turn(-87);
+    chassis.turn(-83);
     scraper.set(true);
     wait(300, msec);
-    chassis.move(12, 10);
+    chassis.move(12, 4);
     wait(1800, msec);
 
     // score 6 blocks -> long goal
@@ -286,28 +286,46 @@ void autoSkills() {
     chassis.turn(90);
     longGoal();
     chassis.move(13.5, 7);
-    wait(2000, msec);
+    wait(3200, msec);
 
-    // push blocks -> control zone of long goal
+    // get blocks, round 2
     chassis.move(-2);
     moveIntake(0, 0, 0);
     chassis.drive_max_voltage = 12;
     chassis.set_drive_constants(9, 1.2, 0, 4.5, 0);
     chassis.drive_timeout = 3000;
     setHeadingConst(9, 0.3, 1.7);
-    chassis.arc(-35.5, 0);
+    chassis.arc(-37, 0);
     chassis.turn(90);
-    chassis.move(40, 4);
+    chassis.set_drive_constants(12, 1.2, 0, 4.5, 0); // 1.2,4.5
+    chassis.drive_timeout = 2000;
+    setHeadingConst(6, 0.4, 1);
+    basket();
+    chassis.move(82, 5);
 
-    // go to match loader 2
-    // descorer.set(true);
-    // chassis.turn(85);
-    // chassis.move(30);
+    // wall reset 1
+    chassis.turn(180);
+    chassis.drive_timeout = 2750;
+    chassis.move(-60, 4);
+    chassis.set_heading(0);
+    chassis.drive_timeout = 2000;
+    chassis.move(22);
 
-    // chassis.move(35);
-    // wait(2000, msec);
-    // chassis.move(-10);
-    // wait(2000, msec);
-    // l.stop();
-    // r.stop();
+    // get 6 blocks from match loader 2
+    chassis.turn(90);
+    scraper.set(true);
+    chassis.move(12, 8);
+    wait(1800, msec);
+
+    // score blocks -> long goal
+    chassis.move(-15);
+    wait(300, msec);
+    scraper.set(false);
+    wait(20, msec);
+    chassis.turn(-90);
+    longGoal();
+    chassis.move(13.5, 7);
+    wait(3200, msec);
+
+    
 }
