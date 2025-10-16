@@ -79,8 +79,43 @@ void autonomous(void) {
     imu.resetHeading();
     imu.resetRotation();
 
-    left2();
+    //left2();
     //autoSkills();
+    chassis.set_drive_exit_conditions(1.5, 200, 2000);
+    chassis.set_turn_exit_conditions(1, 200, 1000); //0.5,300,2000
+
+    auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
+
+    chassis.set_drive_exit_conditions(0.5, 200, 2000);
+    chassis.set_turn_constants(12, 0.3, 0, 2, 15);
+
+    chassis.move(-10);
+    chassis.turn(-130);
+    chassis.move(28);
+    chassis.turn(-100);
+    chassis.move(10);
+    wait(200, msec);
+
+    moveIntake(-12, 0, 0);
+    chassis.move(65);//v=10
+    chassis.turn(0);
+    chassis.move(-10);
+    chassis.set_heading(0);
+    chassis.drive_timeout = 3000;
+    basket();
+    chassis.move(135, 8);
+    chassis.turn(80);
+    moveIntake(-12, 0, 0);
+    chassis.move(40, 10);
+    chassis.move(-20);
+    
+    // chassis.turn(90);
+    // chassis.move(50);
+    // chassis.turn(0);
+    // chassis.move(25);
+    // chassis.move(-90);
+
+
 }
 
 /*---------------------------------------------------------------------------*/
