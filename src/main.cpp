@@ -79,8 +79,8 @@ void autonomous(void) {
     imu.resetHeading();
     imu.resetRotation();
 
-    //LEFT_6LG_DESCORE();
-    autoSkills();
+    left2();
+    //autoSkills();
 }
 
 /*---------------------------------------------------------------------------*/
