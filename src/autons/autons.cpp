@@ -349,15 +349,37 @@ void autoSkills() {
     scraper.set(false);
     wait(20, msec);
     chassis.turn(105);
+    chassis.set_heading(0);
     longGoal();
     chassis.move(7.7, 7);
     wait(3500, msec);
 
     // clear blue park zone
+    // chassis.move(-10);
+    // chassis.turn(-57);
+    // chassis.move(16);
+    // chassis.turn(-3);
+    // lowGoal(); // outtake
+    // chassis.move(43);
+
+    // going towards blue park zone
     chassis.move(-10);
-    chassis.turn(-57);
-    chassis.move(16);
-    chassis.turn(-3);
-    lowGoal(); // outtake
-    chassis.move(43);
+    chassis.turn(-130);
+    chassis.move(28);
+    chassis.turn(-110);
+    wait(200, msec);
+
+    // clear blue park zone
+    moveIntake(-12, 0, 0);
+    chassis.move(75);//v=10
+    chassis.turn(0);
+    chassis.move(-10);
+    chassis.set_heading(0);
+    chassis.drive_timeout = 3000;
+    basket();
+    chassis.move(135, 8);
+    chassis.turn(75);
+    moveIntake(-12, 0, 0);
+    chassis.drive_timeout = 5000;
+    chassis.move(50);
 }
