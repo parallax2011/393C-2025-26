@@ -32,20 +32,89 @@ void left2() {
     chassis.set_drive_exit_conditions(0.5, 200, 2000);
     chassis.set_turn_constants(12, 0.3, 0, 2, 15);
 
-    // blocks 1-3
-    basket();
-    auto t2 = []() { wait(1200, msec); scraper.set(true); }; thread T2 = thread(t2); //800
-    chassis.move(37, 4); //23, 26, 23
-    wait(200, msec);
+    chassis.drive_max_voltage = 7;
 
     // match loader
-    chassis.turn(-110);
-    chassis.move(37);
-    chassis.turn(-155);
-    chassis.move(8);
-    wait(700, msec);
-    chassis.move(-15);
+    chassis.drive_timeout = 900;//timeout=900 for v=12
+    chassis.move(32.3, 12); //straight=32.3
+    chassis.drive_timeout = 2000;
+    basket();
+    // wait(300, msec);
+    // auto t1 = []() { scraper.set(true); }; thread T1 = thread(t1);
+    chassis.turn_timeout = 700;
+    chassis.turn(-83);
+    chassis.turn_timeout = 1000;
+    scraper.set(true);
+    wait(300, msec);
+    chassis.drive_timeout = 1000;
+    chassis.move(12, 4);//v=4
 
+    // go to field 3 blocks
+    chassis.drive_timeout = 2000;
+    chassis.move(-15, 12);//v=7
+    scraper.set(false);
+    chassis.turn(-206);
+    auto t2 = []() { wait(1200, msec); scraper.set(true); }; thread T2 = thread(t2); //800
+    chassis.move(37, 5.5); //23, 26, 23
+    wait(300, msec);
+    
+    // long goal and push
+    chassis.move(-38, 12);//v=7
+    scraper.set(false);
+    chassis.turn(93);
+    longGoal();
+    chassis.move(9);
+    wait(4000, msec);
+    chassis.move(-10, 12);
+    chassis.drive_timeout = 5000;
+    chassis.move(20, 12);
+}
+
+void right2() {
+    chassis.set_drive_exit_conditions(1.5, 200, 2000);
+    chassis.set_turn_exit_conditions(1, 200, 1000); //0.5,300,2000
+
+    auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
+
+    chassis.set_drive_exit_conditions(0.5, 200, 2000);
+    chassis.set_turn_constants(12, 0.3, 0, 2, 15);
+
+    chassis.drive_max_voltage = 7;
+
+    // match loader
+    chassis.drive_timeout = 900;//timeout=900 for v=12
+    chassis.move(30.8, 12); //straight=32.3
+    chassis.drive_timeout = 2000;
+    basket();
+    // wait(300, msec);
+    // auto t1 = []() { scraper.set(true); }; thread T1 = thread(t1);
+    chassis.turn_timeout = 700;
+    chassis.turn(85);
+    chassis.turn_timeout = 1000;
+    scraper.set(true);
+    wait(300, msec);
+    chassis.drive_timeout = 1100;
+    chassis.move(15, 4);//v=4
+
+    // go to field 3 blocks
+    chassis.drive_timeout = 2000;
+    chassis.move(-15, 12);//v=7
+    scraper.set(false);
+    chassis.turn(210);
+    auto t2 = []() { wait(1200, msec); scraper.set(true); }; thread T2 = thread(t2); //800
+    chassis.move(37, 5.5); //23, 26, 23
+    wait(300, msec);
+    
+    // long goal and push
+    chassis.move(-38, 12);//v=7
+    scraper.set(false);
+    chassis.turn(-93);
+    longGoal();
+    chassis.move(12);
+    wait(4000, msec);
+    chassis.move(-10, 12);
+    chassis.drive_timeout = 5000;
+    chassis.move(20, 12);
 }
 
 void LEFT_6LG_DESCORE() {
@@ -311,7 +380,7 @@ void autoSkills() {
     chassis.turn(88);
     longGoal();
     chassis.move(13.5, 7);
-    wait(3200, msec);
+    wait(2000, msec); //3200
 
     // get blocks, round 2
     chassis.move(-2);
@@ -348,11 +417,11 @@ void autoSkills() {
     wait(300, msec);
     scraper.set(false);
     wait(20, msec);
-    chassis.turn(105);
+    chassis.turn(97);
     chassis.set_heading(0);
     longGoal();
     chassis.move(7.7, 7);
-    wait(3500, msec);
+    wait(5000, msec);
 
     // clear blue park zone
     // chassis.move(-10);
