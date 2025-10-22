@@ -79,9 +79,13 @@ void autonomous(void) {
     imu.resetHeading();
     imu.resetRotation();
 
-    //left2();
-    right2();
+    left2();
+    //right2();
     //autoSkills();
+
+    // chassis.move(10);
+    // r.stop();
+    // l.stop();
     
     
     // chassis.turn(90);
@@ -234,9 +238,7 @@ void usercontrol(void) {
 
         // csort at match loader
         } else if (controller1.ButtonB.pressing()) {
-            pto.set(true);
-            moveIntake(12, -12, 0);
-
+           pto.set(false); moveIntake(12, 12, 0);
         // intake off         
         } else {
             pto.set(false);

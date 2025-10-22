@@ -404,7 +404,7 @@ void autoSkills() {
     chassis.move(-60, 4);
     chassis.set_heading(0);
     chassis.drive_timeout = 2000;
-    chassis.move(19, 4);
+    chassis.move(20.7, 4);
 
     // get 6 blocks from match loader 2
     chassis.turn(-90);
@@ -417,7 +417,7 @@ void autoSkills() {
     wait(300, msec);
     scraper.set(false);
     wait(20, msec);
-    chassis.turn(97);
+    chassis.turn(98.5);
     chassis.set_heading(0);
     longGoal();
     chassis.move(7.7, 7);
