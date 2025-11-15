@@ -35,18 +35,19 @@ controller controller1;
 #define REVERSE_L true
 #define REVERSE_R false
 
-#define PORT_LF PORT13
-#define PORT_LM PORT12
-#define PORT_LB PORT11
-#define PORT_RF PORT20
-#define PORT_RM PORT19
-#define PORT_RB PORT18
-#define PORT_INTAKE_LOWER PORT10
+#define PORT_LF PORT16
+#define PORT_LM PORT15
+#define PORT_LB PORT14
+#define PORT_RF PORT13
+#define PORT_RM PORT12
+#define PORT_RB PORT11
+#define PORT_INTAKE_LOWER PORT20
 #define PORT_INTAKE_UPPER PORT9
-#define PORT_INTAKE_BACK PORT7
+// #define PORT_INTAKE_BACK PORT7
 
 #define PORT_IMU PORT17
-#define PORT_OPTICAL PORT14
+#define PORT_OPTICAL PORT10
+#define PORT_DISTANCE PORT7
 
 // motors/motor groups
 motor lf = motor(PORT_LF, BLUE, REVERSE_L);
@@ -56,23 +57,28 @@ motor rf = motor(PORT_RF, BLUE, REVERSE_R);
 motor rm = motor(PORT_RM, BLUE, REVERSE_R);
 motor rb = motor(PORT_RB, BLUE, REVERSE_R);
 
-motor inl = motor(PORT_INTAKE_LOWER, BLUE, false); // intake lower 11w
-motor inu = motor(PORT_INTAKE_UPPER, BLUE, false); // intake upper 5.5w
-motor inb = motor(PORT_INTAKE_BACK, BLUE, true); // intake back 5.5w
+// 9/14 config
+// motor inl = motor(PORT_INTAKE_LOWER, BLUE, false); // intake lower 11w
+// motor inu = motor(PORT_INTAKE_UPPER, BLUE, false); // intake upper 5.5w
+// motor inb = motor(PORT_INTAKE_BACK, BLUE, true); // intake back 5.5w
+motor inl = motor(PORT_INTAKE_LOWER, BLUE, true); // intake lower 11w
+motor inu = motor(PORT_INTAKE_UPPER, BLUE, true); // intake upper 11w,
 
 motor_group l = motor_group(lf, lm, lb);
 motor_group r = motor_group(rf, rm, rb);
-motor_group intake = motor_group(inl, inu, inb);
+motor_group intake = motor_group(inl, inu);
 
 // sensors
 inertial imu = inertial(PORT_IMU);
 optical optic = optical(PORT_OPTICAL);
+vex::distance dist = vex::distance(PORT_DISTANCE);
  
 // pneumatics
-digital_out scraper = digital_out(Brain.ThreeWirePort.A);
+digital_out scraper = digital_out(Brain.ThreeWirePort.G);
 digital_out descorer = digital_out(Brain.ThreeWirePort.B);
-digital_out parker = digital_out(Brain.ThreeWirePort.C);
-digital_out pto = digital_out(Brain.ThreeWirePort.F);
+digital_out gate = digital_out(Brain.ThreeWirePort.A);
+// digital_out parker = digital_out(Brain.ThreeWirePort.C);
+// digital_out pto = digital_out(Brain.ThreeWirePort.F);
 
 void vexcodeInit( void ) {
   // nothing to initialize

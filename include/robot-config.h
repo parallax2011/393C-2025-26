@@ -18,7 +18,6 @@ extern motor rb;
 
 extern motor inl;
 extern motor inu;
-extern motor inb;
 
 extern motor_group intake;
 extern motor_group l;
@@ -27,11 +26,11 @@ extern motor_group r;
 // sensors
 extern inertial imu;
 extern optical optic;
+extern vex::distance dist;
 
 // pneumatics
 extern digital_out scraper;
 extern digital_out descorer;
-extern digital_out parker;
-extern digital_out pto;
+extern digital_out gate;
 
 void  vexcodeInit( void );

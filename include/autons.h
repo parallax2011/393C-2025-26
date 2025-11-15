@@ -12,3 +12,6 @@ void autoLeft(std::string alliance);
 void autoRight(std::string alliance);
 
 void autoSkills();
+
+void autoRIGHT();
+void skills();

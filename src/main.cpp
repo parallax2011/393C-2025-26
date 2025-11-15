@@ -54,7 +54,7 @@ void telemetry() {
 void pre_auton() {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
-    default_constants();
+    //default_constants();
 
     telemetry();
     imu.calibrate(3000);
@@ -62,7 +62,6 @@ void pre_auton() {
 
     optic.setLight(ledState::on);
     optic.setLightPower(100);
-
     optic.objectDetectThreshold(10);
 }
 
@@ -79,11 +78,29 @@ void autonomous(void) {
     imu.resetHeading();
     imu.resetRotation();
 
-    left2();
+    //left2();
     //right2();
     //autoSkills();
 
-    // chassis.move(10);
+    chassis.set_drive_exit_conditions(0.5, 300, 2000);
+    chassis.set_drive_constants(12, 1, 0, 5.5, 0); // 1.2,4.5
+    chassis.set_heading_constants(6, 0.4, 0, 1, 0);
+
+    chassis.set_turn_exit_conditions(0.5, 300, 1000);
+    chassis.set_turn_constants(12, 0.4, 0.03, 3.1, 15);
+
+    autoRIGHT();
+
+    /*
+    kp
+    1 - 10.4
+    1.4 ----
+    1.5 - 9.86
+
+    */
+
+
+    
     // r.stop();
     // l.stop();
     
@@ -114,7 +131,7 @@ int filterTimer = 0;           // when to stop filtering
 // start filter eject, but non-blocking
 void filter_block() {
     filtering = true;
-    filterTimer = timer::system() + 400; // run for 1.5s
+    filterTimer = timer::system() + 200; // run for 1.5s
 }
 
 void get_block(std::string targetColor) {
@@ -151,21 +168,21 @@ void get_block(std::string targetColor) {
 }
 bool STATE = false;
 
-void ctrlKillSwitch() {
-    STATE = !STATE;
-    if (STATE) {
-        t1283789.interrupt();
-        controller1.Screen.clearScreen();
-        controller1.Screen.setCursor(1,1);
-        controller1.Screen.print("NO SORTING");
-    } else {
-        t1283789 = thread(filterRed);
-        controller1.Screen.clearScreen();
-        controller1.Screen.setCursor(1,1);
-        controller1.Screen.print("YES SORTING");
-    }
+// void ctrlKillSwitch() {
+//     STATE = !STATE;
+//     if (STATE) {
+//         t1283789.interrupt();
+//         controller1.Screen.clearScreen();
+//         controller1.Screen.setCursor(1,1);
+//         controller1.Screen.print("NO SORTING");
+//     } else {
+//         t1283789 = thread(filterRed);
+//         controller1.Screen.clearScreen();
+//         controller1.Screen.setCursor(1,1);
+//         controller1.Screen.print("YES SORTING");
+//     }
 
-}
+// }
 //false = blue;
 
 void filter_blue() { get_block("blue"); }
@@ -175,182 +192,66 @@ bool driverControl = false;
 
 void usercontrol(void) {
 
-    //if (driverControl) {
-
-    // controller1.ButtonY.pressed(ctrlScraper);
-    // controller1.ButtonL2.pressed(ctrlDescorer);
-    // controller1.ButtonDown.pressed(ctrlKillSwitch);
-
-    l.setStopping(coast); 
+    l.setStopping(coast);
     r.setStopping(coast);
 
     optic.setLight(ledState::on);
     optic.setLightPower(100);
     optic.objectDetectThreshold(50);
 
+    thread t12312 = thread(filterRed);
+
+
     while (1) {
 
         // chassis
-        arcade();
+        arcade(controller1.Axis3.position(), // forward
+                controller1.Axis1.position(), // turn
+                false, // enabling turn curves
+                5 // deadzone=5
+        );
 
-        // double park
-        if (controller1.ButtonX.pressing() and controller1.ButtonL1.pressing()) {
-            ctrlPark();
-            while (controller1.ButtonX.pressing() and controller1.ButtonL1.pressing()) {
-                wait(20, msec);
-            }
-        }
-        // if (controller1.ButtonRight.pressing()) {
-        //     ctrlSortSwap();
-        //     while (controller1.ButtonRight.pressing()) {
-        //         wait(20, msec);
-        //     }
-        // }
-        
         // intake
-        else if (controller1.ButtonR1.pressing() and !(controller1.ButtonL1.pressing()) and filtering) {
+        if (controller1.ButtonR1.pressing() and !(controller1.ButtonL1.pressing()) and filtering) {
             // run filter eject
             inl.spin(fwd, 12, volt);
             inu.spin(fwd, -12, volt);
 
             if (vex::timer::system() > filterTimer) {
                 filtering = false;
-                moveIntake(0, 0, 0); //stop for adjustment
+                moveIntake(0, 0); //stop for adjustment
             }
         }
 
         // lower goal
         else if (controller1.ButtonR1.pressing() and controller1.ButtonL1.pressing()) {
-            //lowGoal();
-            lowGoal();//moveIntake(-6, 0, 6);
+            gate.set(false);
+            outtake();
 
         // basket
         } else if (controller1.ButtonR1.pressing() and !(controller1.ButtonL1.pressing()) and (enableIntake == true)) {
+            gate.set(false);
             basket();
 
         // upper goal
         } else if (controller1.ButtonR2.pressing() and controller1.ButtonL1.pressing()) {
-            highGoal();//moveIntake(6, -6, 10);
+            moveIntake(12, 0);
 
         // long goal
         } else if (controller1.ButtonR2.pressing() and !(controller1.ButtonL1.pressing())) {
+            gate.set(true);
             longGoal();
 
-        // csort at match loader
         } else if (controller1.ButtonB.pressing()) {
-           pto.set(false); moveIntake(12, 12, 0);
-        // intake off         
+            gate.set(true);
+            moveIntake(12, 0);
+
         } else {
-            pto.set(false);
-            moveIntake(0, 0, 0);
+            gate.set(false);
+            moveIntake(0, 0);
         }
 
         wait(20, msec);
-    }
-    //}
-}
-
-string autons[] = {"Skills", "Red Left", "Red Right", "Blue Left", "Blue Right"};
-
-int auton(string selected_auton) {
-    if (selected_auton == "Skills") {
-        chassis.move(12);
-        return 0;
-    } else if (selected_auton == "Red Left") {
-        return 0;
-    } else if (selected_auton == "Red Right") {
-        return 0;
-    } else if (selected_auton == "Blue Left") {
-        return 0;
-    } else if (selected_auton == "Blue Right") {
-        return 0;
-    }
-    return 1;
-}
-
-string selectedAuton;
-
-std::string auton_menu() {
-    int autoPos = 0;
-    bool autoSelected = false;
-
-    while (!autoSelected) {
-        
-        if (controller1.ButtonRight.pressing()) {
-            while (controller1.ButtonRight.pressing()) {}
-            if (autoPos != end(autons) - begin(autons) - 1) {
-                autoPos ++;
-            }
-        }
-
-        if (controller1.ButtonLeft.pressing()) {
-            while (controller1.ButtonLeft.pressing()) {}
-            if (autoPos != 0) {
-                autoPos --;
-            }
-        }
-
-        controller1.Screen.clearScreen();
-        controller1.Screen.setCursor(1, 1);
-        ostringstream autonNum;
-        autonNum << autoPos + 1;
-        string displayauto= ""+autonNum.str()+". "+autons[autoPos]; //Display selected auton
-        controller1.Screen.print(displayauto.c_str());
-        controller1.Screen.newLine();
-        controller1.Screen.print("Run: A");
-        
-        if (controller1.ButtonA.pressing()) {
-            return displayauto;
-        }
-
-        //Controller.Screen.newLine();
-        //Controller.Screen.print("Inertial Rotation: %f",Inertial.heading(deg));
-    }
-    return "No auton selected";
-}
-
-bool compMode = false;
-
-int selectAuton() {
-    
-    // display options on controller
-    controller1.Screen.clearScreen();
-    controller1.Screen.setCursor(1, 1);
-    controller1.Screen.print(" Comp  A");
-    controller1.Screen.newLine();
-    controller1.Screen.print(" Test   B");
-    controller1.Screen.newLine();
-    controller1.Screen.print(" Driver >");
-
-
-    while (1) {
-        if (controller1.ButtonA.pressing()) {
-            compMode = true; break;
-        } if (controller1.ButtonB.pressing()) {
-            compMode = false; break;
-        } if (controller1.ButtonRight.pressing()) {
-            driverControl = true; break;
-        }
-    }
-
-    if (driverControl) {
-        usercontrol(); return 0;
-    }
-
-    wait(250, msec);
-    selectedAuton = auton_menu();
-
-    controller1.Screen.clearScreen();
-    controller1.Screen.setCursor(1,1);
-    string displayedAuton = "Run \"" + selectedAuton + "\"?";
-    controller1.Screen.print(displayedAuton.c_str());
-    controller1.Screen.newLine();
-    controller1.Screen.print("Confirm A");
-  
-    while (1) {
-        if (controller1.ButtonA.pressing()) {
-            return 0;
-        }
     }
 }
 
@@ -363,59 +264,9 @@ int main() {
     Competition.autonomous(autonomous);
     Competition.drivercontrol(usercontrol);
 
-    
     controller1.ButtonY.pressed(ctrlScraper);
-    controller1.ButtonB.pressed(ctrlSort);
     controller1.ButtonL2.pressed(ctrlDescorer);
-    controller1.ButtonDown.pressed(ctrlKillSwitch);
-
-
-    // controller1.ButtonRight.pressed(ctrlSortSwap);
-
-    // vexcodeInit();
-    // default_constants();
-    // optic.setLightPower(100, percent); 
-    // optic.setLight(ledState::on); 
-    // Brain.Screen.clearScreen();
-
-    // cout << "033[2J";
-
-    // imu.calibrate();
-    // // Set up callbacks for autonomous and driver control periods.
-    // intake.setVelocity(100, pct);
-
-    // l.resetPosition();
-    // r.resetPosition();
-    // imu.resetHeading();
-    // imu.resetRotation();
-
-    // selectAuton();
-    // if (compMode) {
-    //     controller1.Screen.clearScreen();
-    //     controller1.Screen.setCursor(1,1);
-    //     controller1.Screen.print("Waiting to start...");
-    //     while (1) { //check if comp switch enabled for auton
-    //         wait(50, msec);
-    //         if (Competition.isAutonomous() && Competition.isEnabled()){
-    //             break;
-    //         }
-    //     }
-    //     auton(selectedAuton);
-    //     while (1) { //check if comp switch enabled for driver
-    //         wait(50, msec);
-    //         if (Competition.isDriverControl() && Competition.isEnabled()){
-    //             break;
-    //         }
-    //     }
-    //     usercontrol();
-    //     driverControl = true;
-    // } else { //Regular/test mode
-    //     cout << "Run";
-    //     int autonRun = auton(selectedAuton); //run auton
-    //     if (autonRun != 2){
-    //         usercontrol(); //Instantly run auton
-    //     }        
-    // }
+    // controller1.ButtonDown.pressed(ctrlKillSwitch);
 
     // Run the pre-autonomous function.
     pre_auton();

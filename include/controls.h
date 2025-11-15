@@ -1,19 +1,20 @@
 #include "vex.h"
 
 void ctrlScraper();
-void ctrlPark();
 void ctrlDescorer();
 void ctrlKillSwitch();
 
 void arcade();
-void moveIntake(int inlv, int inuv, int inbv);
+void arcade(int forward, int turn, bool enableTurnCurve, float deadbandWidth);
+void moveIntake(int inlv, int inuv);
 
-void lowGoal();
+void outtake();
+
+// void lowGoal();
 void basket();
 void highGoal();
 void longGoal();
 
-void ctrlSort();
     
 // public:
 //   float error = 0;
