@@ -23,6 +23,7 @@ void setHeadingConst(float max, float kp, float kd) {
     chassis.set_heading_constants(max, kp, 0, kd, 0);
 }
 
+
 void autoRIGHT() {
     auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
 
@@ -32,26 +33,30 @@ void autoRIGHT() {
     chassis.turn(88);
     scraper.set(true);
     wait(1000, msec);
-    chassis.drive_timeout = 1200; chassis.move(6.5, 3);
-    wait(150, msec);
+    chassis.drive_timeout = 1000; chassis.move(7.5, 3);
+    wait(100, msec);
     chassis.move(-13.5);
     scraper.set(false);
-    chassis.turn(218);
+    chassis.drive_timeout = 2300;
+    chassis.turn(213);
     
-    auto t2 = []() { wait(1000, msec); scraper.set(true); }; thread T2 = thread(t2); //800
-    chassis.move(37, 5.5); //23, 26, 23
+    // auto t2 = []() { wait(1000, msec); scraper.set(true); }; thread T2 = thread(t2); //800
+    chassis.move(37, 3); //23, 26, 23
     wait(300, msec);
     
     // long goal and push
-    chassis.move(-40, 12);//v=7
+    chassis.drive_timeout = 1800;
+    chassis.move(-41, 12);//v=7
     scraper.set(false);
-    chassis.turn(-91);
+    chassis.turn(-89);
     longGoal();
-    chassis.move(12);
-    wait(4000, msec);
-    chassis.move(-10, 12);
-    chassis.drive_timeout = 5000;
-    chassis.move(20, 12);
+    l.setStopping(coast);
+    r.setStopping(coast);
+    chassis.move(13);
+    // wait(4000, msec);
+    // chassis.move(-10, 12);
+    // chassis.drive_timeout = 5000;
+    // chassis.move(20, 12);
 
 }
 
@@ -66,11 +71,11 @@ void skills() {
     scraper.set(true);
     wait(1000, msec);
     chassis.drive_timeout = 1200; chassis.move(6.5, 3);
-    wait(1200, msec);
+    wait(1500, msec);
 
     chassis.move(-13.5);
     chassis.move(14);
-    wait(1200, msec);
+    wait(2000, msec);
 
     chassis.move(-13);
     scraper.set(false);
@@ -99,7 +104,7 @@ void skills() {
     chassis.drive_settle_error = 0.2; chassis.drive_settle_time = 300; chassis.move(17 - dist1);
     wait(200, msec);
 
-    chassis.turn(83);
+    chassis.turn(81);//83
     scraper.set(true);
     wait(1000, msec);
     basket();
@@ -117,14 +122,19 @@ void skills() {
     // chassis.move(10);
 
     double dist2 = dist.objectDistance(inches);
-    std::cout << "DISTANCE: " << dist0 << std::endl;
-    chassis.drive_settle_error = 0.2; chassis.drive_settle_time = 300; chassis.move(16 - dist2);
+    std::cout << "DISTANCE: " << dist2 << std::endl;
+    chassis.drive_settle_error = 0.2; chassis.drive_settle_time = 300; chassis.move(15 - dist2);
     wait(200, msec);
 
     chassis.turn(-91);
     chassis.move(11.5);
     longGoal();
-    wait(4500, msec);
+    wait(3000, msec);
+    moveIntake(0, 0);
+    chassis.move(-10);
+    longGoal();
+    chassis.move(10);
+    wait(3000, msec);
 
     chassis.set_heading(-90);
     chassis.move(-11);

@@ -7,10 +7,8 @@
 #include <typeinfo>
 #include <functional>
 
-
 using namespace vex;
 competition Competition;
-
 
 /**
  * Function before autonomous. It prints the current auton number on the screen
@@ -88,8 +86,45 @@ void autonomous(void) {
 
     chassis.set_turn_exit_conditions(0.5, 300, 1000);
     chassis.set_turn_constants(12, 0.4, 0.03, 3.1, 15);
-
+ 
     autoRIGHT();
+    // wait(13000, msec);
+    // chassis.move(10);
+    // l.stop();
+    // r.stop();
+
+    //skills();
+
+    // auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
+
+    // // match loader
+    // chassis.move(32.3);//32.3
+    // basket();
+    // chassis.turn(-88);
+    // scraper.set(true);
+    // wait(1000, msec);
+    // chassis.drive_timeout = 1000; chassis.move(9.2, 3);
+    // wait(100, msec);
+    // chassis.move(-13.5);
+    // scraper.set(false);
+    // chassis.turn(-213);
+    
+    // auto t2 = []() { wait(1000, msec); scraper.set(true); }; thread T2 = thread(t2); //800
+    // chassis.move(37, 5.5); //23, 26, 23
+    // wait(300, msec);
+    
+    // // long goal and push
+    // chassis.drive_timeout = 1800;
+    // chassis.move(-41, 12);//v=7
+    // scraper.set(false);
+    // chassis.turn(95);
+    // longGoal();
+    // chassis.move(15);
+    // wait(4000, msec);
+    // chassis.move(-10, 12);
+    // chassis.drive_timeout = 5000;
+    // chassis.move(20, 12);
+
 
     /*
     kp
@@ -225,26 +260,27 @@ void usercontrol(void) {
 
         // lower goal
         else if (controller1.ButtonR1.pressing() and controller1.ButtonL1.pressing()) {
-            gate.set(false);
             outtake();
 
         // basket
         } else if (controller1.ButtonR1.pressing() and !(controller1.ButtonL1.pressing()) and (enableIntake == true)) {
-            gate.set(false);
             basket();
 
         // upper goal
         } else if (controller1.ButtonR2.pressing() and controller1.ButtonL1.pressing()) {
-            moveIntake(12, 0);
+            // moveIntake(12, 0);
 
         // long goal
         } else if (controller1.ButtonR2.pressing() and !(controller1.ButtonL1.pressing())) {
-            gate.set(true);
             longGoal();
 
         } else if (controller1.ButtonB.pressing()) {
             gate.set(true);
             moveIntake(12, 0);
+        
+        // anti-jamming
+        } else if (controller1.ButtonX.pressing()) {
+            antiJam();
 
         } else {
             gate.set(false);
