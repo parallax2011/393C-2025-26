@@ -16,10 +16,9 @@ extern motor rf;
 extern motor rm;
 extern motor rb;
 
-extern motor inl;
-extern motor inu;
+extern motor inf;
+extern motor inb;
 
-extern motor_group intake;
 extern motor_group l;
 extern motor_group r;
 
@@ -31,6 +30,7 @@ extern vex::distance dist;
 // pneumatics
 extern digital_out scraper;
 extern digital_out descorer;
-extern digital_out gate;
+extern digital_out hood;
+extern digital_out trapdoor;
 
 void  vexcodeInit( void );

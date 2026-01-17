@@ -25,11 +25,9 @@ thread t1283789;
 void telemetry() {
     while (1) {
         std::cout << "pos:              " << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
-        std::cout << "heading:          " << imu.rotation() << std::endl;
+        std::cout << "heading:          " << imu.rotation() << std::endl << std::endl;
         // std::cout << "drive:            " << (l.position(deg) + r.position(deg))/2 << std::endl;
         // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
-
-        //std::cout << "Direction:              " << intake.direction() << std::endl;
         // std::cout << "Position [deg]:         " << intake.position(deg) << std::endl;
         // std::cout << "Velocity [pct]:         " << intake.velocity(pct) << std::endl;
         // std::cout << "Current [pct]:          " << intake.current(pct) << std::endl;
@@ -39,12 +37,8 @@ void telemetry() {
         // std::cout << "Voltage [volt]:         " << intake.voltage() << std::endl;
         // std::cout << std::endl << std::endl;
 
-        //std::cout << "velocity:         " << (l.voltage() + r.voltage()) / 2 << std::endl << std::endl;
-        //std::cout << "output:           " << chassis.
-        //std::cout << "drive temp:       " << l.temperature() << std::endl;
-        //std::cout << "intake temp:      " << i ntake.temperature(celsius) << std::endl;
-        //std::cout << "intake vel:       " << intake.voltage() << std::endl;
-        //std::cout << "lift position:    " << lift.position(deg) << std::endl;
+        // std::cout << "velocity:         " << (l.voltage() + r.voltage()) / 2 << std::endl << std::endl;
+        // wait(500, msec);
         wait(500, msec);
     }
 }
@@ -76,76 +70,25 @@ void autonomous(void) {
     imu.resetHeading();
     imu.resetRotation();
 
-    //left2();
-    //right2();
-    //autoSkills();
-
     chassis.set_drive_exit_conditions(0.5, 300, 2000);
-    chassis.set_drive_constants(12, 1, 0, 5.5, 0); // 1.2,4.5
+    chassis.set_drive_constants(12, 1, 0, 6, 0); // 1.2,4.5
     chassis.set_heading_constants(6, 0.4, 0, 1, 0);
 
-    chassis.set_turn_exit_conditions(0.5, 300, 1000);
-    chassis.set_turn_constants(12, 0.4, 0.03, 3.1, 15);
- 
-    autoRIGHT();
-    // wait(13000, msec);
-    // chassis.move(10);
-    // l.stop();
-    // r.stop();
-
-    //skills();
-
-    // auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
-
-    // // match loader
-    // chassis.move(32.3);//32.3
-    // basket();
-    // chassis.turn(-88);
-    // scraper.set(true);
-    // wait(1000, msec);
-    // chassis.drive_timeout = 1000; chassis.move(9.2, 3);
-    // wait(100, msec);
-    // chassis.move(-13.5);
-    // scraper.set(false);
-    // chassis.turn(-213);
-    
-    // auto t2 = []() { wait(1000, msec); scraper.set(true); }; thread T2 = thread(t2); //800
-    // chassis.move(37, 5.5); //23, 26, 23
-    // wait(300, msec);
-    
-    // // long goal and push
-    // chassis.drive_timeout = 1800;
-    // chassis.move(-41, 12);//v=7
-    // scraper.set(false);
-    // chassis.turn(95);
-    // longGoal();
-    // chassis.move(15);
-    // wait(4000, msec);
-    // chassis.move(-10, 12);
-    // chassis.drive_timeout = 5000;
-    // chassis.move(20, 12);
+    chassis.set_turn_exit_conditions(0.8, 300, 3000);
+    chassis.set_turn_constants(12, 0.37, 0.03, 3.1, 15); // 45-90
+    //chassis.set_turn_constants(12, 0.37, 0.03, 2.9, 5); // smaller than 30
 
 
-    /*
-    kp
-    1 - 10.4
-    1.4 ----
-    1.5 - 9.86
-
-    */
-
-
-    
-    // r.stop();
-    // l.stop();
+    if (imu.installed()) {
+        chassis.turn(180);
+    }
+    //chassis.move(20);
     
     
-    // chassis.turn(90);
     // chassis.move(50);
     // chassis.turn(0);
     // chassis.move(25);
     // chassis.move(-90);
-
 
 }
 
@@ -161,12 +104,12 @@ void autonomous(void) {
 
 bool enableIntake = true;
 bool filtering = false;        // filter mode active?
-int filterTimer = 0;           // when to stop filtering
+int filterTimer = 200;           // when to stop filtering
 
 // start filter eject, but non-blocking
 void filter_block() {
     filtering = true;
-    filterTimer = timer::system() + 200; // run for 1.5s
+    filterTimer = timer::system(); // run for 1.5s
 }
 
 void get_block(std::string targetColor) {
@@ -234,10 +177,15 @@ void usercontrol(void) {
     optic.setLightPower(100);
     optic.objectDetectThreshold(50);
 
-    thread t12312 = thread(filterRed);
+    thread tColorSortAlg1 = thread(filterRed);
 
+    bool R1; bool R2; bool L1; bool L2;
 
     while (1) {
+
+        // intake ping booleans
+        R1 = controller1.ButtonR1.pressing(); R2 = controller1.ButtonR2.pressing();
+        L1 = controller1.ButtonL1.pressing(); L2 = controller1.ButtonL2.pressing();
 
         // chassis
         arcade(controller1.Axis3.position(), // forward
@@ -247,45 +195,22 @@ void usercontrol(void) {
         );
 
         // intake
-        if (controller1.ButtonR1.pressing() and !(controller1.ButtonL1.pressing()) and filtering) {
+        if (R1 and !L1 and filtering) {
             // run filter eject
-            inl.spin(fwd, 12, volt);
-            inu.spin(fwd, -12, volt);
-
+            moveIntake(0, 0);
+            
             if (vex::timer::system() > filterTimer) {
                 filtering = false;
                 moveIntake(0, 0); //stop for adjustment
             }
         }
 
-        // lower goal
-        else if (controller1.ButtonR1.pressing() and controller1.ButtonL1.pressing()) {
-            outtake();
-
-        // basket
-        } else if (controller1.ButtonR1.pressing() and !(controller1.ButtonL1.pressing()) and (enableIntake == true)) {
-            basket();
-
-        // upper goal
-        } else if (controller1.ButtonR2.pressing() and controller1.ButtonL1.pressing()) {
-            // moveIntake(12, 0);
-
-        // long goal
-        } else if (controller1.ButtonR2.pressing() and !(controller1.ButtonL1.pressing())) {
-            longGoal();
-
-        } else if (controller1.ButtonB.pressing()) {
-            gate.set(true);
-            moveIntake(12, 0);
-        
-        // anti-jamming
-        } else if (controller1.ButtonX.pressing()) {
-            antiJam();
-
-        } else {
-            gate.set(false);
-            moveIntake(0, 0);
-        }
+        else if (R1 and L1) { descorer.set(false); outtake(); }
+        else if (R1 and !L1 and enableIntake) { descorer.set(false); basket(); }
+        else if (R2 and L1) { descorer.set(false); highGoal(); }
+        else if (R2 and !L1) { descorer.set(false); longGoal(); }
+        else if (L2) { descorer.set(true); }
+        else { descorer.set(false); moveIntake(0, 0); }
 
         wait(20, msec);
     }

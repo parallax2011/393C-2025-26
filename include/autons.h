@@ -14,4 +14,5 @@ void autoRight(std::string alliance);
 void autoSkills();
 
 void autoRIGHT();
+void autoRIGHTLOWGOAL();
 void skills();

@@ -41,42 +41,13 @@ void arcade(int forward, int turn, bool enableTurnCurve, float deadbandWidth) {
     r.spin(fwd, to_volt(forward - turn), volt); // right group
 }
 
-
 void moveIntake(int inlv, int inuv) {
-  inl.spin(fwd, inlv, volt);
-  inu.spin(fwd, inuv, volt);
+  inf.spin(fwd, inlv, volt);
+  inb.spin(fwd, inuv, volt);
 }
 
-void basket() {
-    gate.set(false);
-    moveIntake(12, 0);
-}
-
-void outtake() {
-    gate.set(false);
-    moveIntake(-12, 12);
-}
-
-void highGoal() {
-    moveIntake(12, -12);
-}
-
-void longGoal() {
-    gate.set(true);
-    moveIntake(12, 12);
-}
-
-void antiJam() {
-    gate.set(false);
-    moveIntake(0, -12);
-}
-
-// void lowGoal() { pto.set(false); moveIntake(-9, 0, 9); }
-// void basket() { pto.set(false); moveIntake(12, 12, -12); }
-// void highGoal() { pto.set(true); moveIntake(12, -12, 12); }
-// void manualSort() { moveIntake(12, -12, 0); }
-// void longGoal() { pto.set(false); moveIntake(12, 12, 12); }
-
-// void ctrlSort() {
-//     manualSort();
-// }
+void intake() { hood.set(false); trapdoor.set(false); moveIntake(-12, -12); }
+void scoreLowGoal() { }
+void scoreMidGoal() { hood.set(false); trapdoor.set(true); moveIntake(-12, 6); }
+void scoreLongGoal() { hood.set(true); trapdoor.set(true); moveIntake(-12, -12); }
+void antiJam() { moveIntake(0, -12); }

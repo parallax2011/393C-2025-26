@@ -6,14 +6,14 @@ class Drive;
 extern Drive chassis;
 
 void default_constants() {      
-    chassis.set_drive_constants(12, 1.2, 0, 4.5, 0); // 1.2,4.5
-    chassis.set_heading_constants(6, .4, 0, 1, 0);
-    chassis.set_turn_constants(12, 0.4, 0.03, 3.1, 15);
-    chassis.set_swing_constants(12, 1, 0.01, 6, 0);
+    // chassis.set_drive_constants(12, 1.2, 0, 4.5, 0); // 1.2,4.5
+    // chassis.set_heading_constants(6, .4, 0, 1, 0);
+    // chassis.set_turn_constants(12, 0.4, 0.03, 3.1, 15);
+    // chassis.set_swing_constants(12, 1, 0.01, 6, 0);
 
-    chassis.set_drive_exit_conditions(0.5, 100, 2000);
-    chassis.set_turn_exit_conditions(0.5, 100, 1000);
-    chassis.set_swing_exit_conditions(1, 200, 3000);
+    // chassis.set_drive_exit_conditions(0.5, 100, 2000);
+    // chassis.set_turn_exit_conditions(0.5, 100, 1000);
+    // chassis.set_swing_exit_conditions(1, 200, 3000);
 }
 
 // long moves - 6, 0.71, 1.2
@@ -21,6 +21,29 @@ void default_constants() {
 
 void setHeadingConst(float max, float kp, float kd) {
     chassis.set_heading_constants(max, kp, 0, kd, 0);
+}
+
+void autoRIGHTLOWGOAL() {
+        auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
+
+    // match loader
+    chassis.move(30.3);//32.3
+    basket();
+    chassis.turn(88);
+    scraper.set(true);
+    wait(1000, msec);
+    chassis.drive_timeout = 1000; chassis.move(7.5, 3);
+    wait(100, msec);
+    chassis.move(-13.5);
+    scraper.set(false);
+    chassis.drive_timeout = 2300;
+    chassis.turn(225);
+    
+    
+    auto t2 = []() { wait(1000, msec); moveIntake(-12, 0); }; thread T2 = thread(t2); //800
+    chassis.move(34, 4); //23, 26, 23
+    wait(300, msec);
+
 }
 
 
@@ -46,9 +69,9 @@ void autoRIGHT() {
     
     // long goal and push
     chassis.drive_timeout = 1800;
-    chassis.move(-41, 12);//v=7
+    chassis.move(-39, 12);//v=7
     scraper.set(false);
-    chassis.turn(-89);
+    chassis.turn(-94);
     longGoal();
     l.setStopping(coast);
     r.setStopping(coast);
