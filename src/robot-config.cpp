@@ -48,8 +48,8 @@ controller controller1;
 // #define PORT_INTAKE_BACK PORT7
 
 #define PORT_IMU PORT6
-#define PORT_OPTICAL PORT4
-#define PORT_DISTANCE PORT8
+#define PORT_OPTICAL PORT8
+#define PORT_DISTANCE PORT4
 
 // motors/motor groups
 motor lf = motor(PORT_LF, BLUE, true); //t

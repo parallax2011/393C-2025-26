@@ -204,16 +204,16 @@ float right_voltage_scaling(float drive_output, float heading_output){
  * which way it's supposed to be going?
  * 
  * @param drive_output The forward output of the drive.
- * @param drive_min_voltage The minimum output of the drive.
+ * @param lin_min The minimum output of the drive.
  * @return The voltage with the minimum applied.
  */
 
-float clamp_min_voltage(float drive_output, float drive_min_voltage){
-  if(drive_output < 0 && drive_output > -drive_min_voltage){
-      return -drive_min_voltage;
+float clamp_min_voltage(float drive_output, float lin_min){
+  if(drive_output < 0 && drive_output > -lin_min){
+      return -lin_min;
   }
-  if(drive_output > 0 && drive_output < drive_min_voltage){
-    return drive_min_voltage;
+  if(drive_output > 0 && drive_output < lin_min){
+    return lin_min;
   }
   return drive_output;
 }

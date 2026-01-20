@@ -16,171 +16,50 @@ void default_constants() {
     // chassis.set_swing_exit_conditions(1, 200, 3000);
 }
 
-// long moves - 6, 0.71, 1.2
-// short moves - 6, 0.4, 1
+void autoSKILLS() {
 
-void setHeadingConst(float max, float kp, float kd) {
-    chassis.set_heading_constants(max, kp, 0, kd, 0);
-}
-
-void autoRIGHTLOWGOAL() {
-        auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
-
-    // match loader
-    chassis.move(30.3);//32.3
-    basket();
-    chassis.turn(88);
-    scraper.set(true);
-    wait(1000, msec);
-    chassis.drive_timeout = 1000; chassis.move(7.5, 3);
-    wait(100, msec);
-    chassis.move(-13.5);
-    scraper.set(false);
-    chassis.drive_timeout = 2300;
-    chassis.turn(225);
-    
-    
-    auto t2 = []() { wait(1000, msec); moveIntake(-12, 0); }; thread T2 = thread(t2); //800
-    chassis.move(34, 4); //23, 26, 23
-    wait(300, msec);
-
-}
-
-
-void autoRIGHT() {
-    auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
-
-    // match loader
-    chassis.move(30.3);//32.3
-    basket();
-    chassis.turn(88);
-    scraper.set(true);
-    wait(1000, msec);
-    chassis.drive_timeout = 1000; chassis.move(7.5, 3);
-    wait(100, msec);
-    chassis.move(-13.5);
-    scraper.set(false);
-    chassis.drive_timeout = 2300;
-    chassis.turn(213);
-    
-    // auto t2 = []() { wait(1000, msec); scraper.set(true); }; thread T2 = thread(t2); //800
-    chassis.move(37, 3); //23, 26, 23
-    wait(300, msec);
-    
-    // long goal and push
-    chassis.drive_timeout = 1800;
-    chassis.move(-39, 12);//v=7
-    scraper.set(false);
-    chassis.turn(-94);
-    longGoal();
-    l.setStopping(coast);
-    r.setStopping(coast);
-    chassis.move(13);
-    // wait(4000, msec);
-    // chassis.move(-10, 12);
-    // chassis.drive_timeout = 5000;
-    // chassis.move(20, 12);
-
-}
-
-void skills() {
-
-    auto t = []() {intake.setMaxTorque(100, pct);}; thread T = thread(t);
-
-    // match loader
-    chassis.move(30.3);//32.3
-    basket();
-    chassis.turn(88);
-    scraper.set(true);
-    wait(1000, msec);
-    chassis.drive_timeout = 1200; chassis.move(6.5, 3);
-    wait(1500, msec);
-
-    chassis.move(-13.5);
-    chassis.move(14);
+    // match loader 1
+    std::cout << "-----------------------------------------" << std::endl;
+    chassis.move(34); std::cout << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
+    chassis.kTurn(-88.5, 12, .33, .035, 3.1, 15);
+    std::cout << std::endl << "After turn:       " << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
+    auto task0 = []() {scraper.set(true); intake();}; thread t_task0 = thread(task0);
     wait(2000, msec);
+    chassis.lin_timeout = 2000; chassis.lin_max = 6; chassis.arc(6, -87.8);
+    wait(1500, msec);
+    std::cout << "After loading:    " << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
 
-    chassis.move(-13);
+    // first scoring on long goal 1
+    chassis.move(-10); 
     scraper.set(false);
-    chassis.turn(178);
-
-    // chassis.move(10);
-
-    double dist0 = dist.objectDistance(inches);
-    std::cout << "DISTANCE: " << dist0 << std::endl;
-    chassis.drive_settle_error = 0.2; chassis.drive_settle_time = 300; chassis.move(17.6 - dist0);
     wait(200, msec);
+    chassis.turn(0); std::cout << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
 
-    chassis.turn(-90);
-    chassis.move(11);
-    longGoal();
-    wait(4500, msec);
+    // arc code
+    chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(10.5, 0.4, 0, 1, 0);
+    auto task1 = []() {descorer.set(true);}; thread t_task1 = thread(task1);
+    chassis.arc(75, 84.5);
+    chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(8.5, 0.4, 0, 1, 0); chassis.arc(24, 180);
 
-    chassis.move(-10);
-    chassis.turn(-5.6);
-    chassis.set_heading_constants(10.5, 0.4, 0, 1, 0);
-    chassis.set_drive_exit_conditions(0.5, 200, 3000);
-    chassis.move(-104, 10);
-
-    double dist1 = dist.objectDistance(inches);
-    std::cout << "DISTANCE: " << dist1 << std::endl;
-    chassis.drive_settle_error = 0.2; chassis.drive_settle_time = 300; chassis.move(17 - dist1);
+    auto task2 = []() {descorer.set(false);}; thread t_task2 = thread(task2);
+    double dist1 = dist.objectDistance(inches); std::cout << "DISTANCE: " << dist1 << std::endl; chassis.move(18.5 - dist1);
     wait(200, msec);
-
-    chassis.turn(81);//83
-    scraper.set(true);
+    chassis.turn(90);
+    auto task3 = []() {scoreLongGoal();}; thread t_task3 = thread(task3);
+    chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(6, 0.4, 0, 1, 0); chassis.lin_timeout = 2000; chassis.move(-22, 4);
     wait(1000, msec);
-    basket();
-    chassis.drive_timeout = 1200; chassis.move(15, 4);
-    wait(1200, msec);
+    // chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(6, 0.4, 0, 1, 0); chassis.lin_timeout = 600; chassis.move(-20, 6);
 
-    chassis.move(-13.5);
-    chassis.move(12.5, 4);
-    wait(1200, msec);
+    // match loader 2
+    t_task3.interrupt(); auto task4 = []() {wait(50, msec); scraper.set(true); intake();}; thread t_task4 = thread(task4);
+    chassis.move(27.5, 4);
+    wait(1000, msec);
 
-    chassis.move(-13);
-    scraper.set(false);
-    chassis.turn(-7);
+    // // match loader 2
+    // chassis.set_drive_constants(12, 1, 0, 7, 0); // 1.2,4.5
+    // chassis.set_heading_constants(6, 0.4, 0, 1, 0); // kp0.4, kd1
 
-    // chassis.move(10);
-
-    double dist2 = dist.objectDistance(inches);
-    std::cout << "DISTANCE: " << dist2 << std::endl;
-    chassis.drive_settle_error = 0.2; chassis.drive_settle_time = 300; chassis.move(15 - dist2);
-    wait(200, msec);
-
-    chassis.turn(-91);
-    chassis.move(11.5);
-    longGoal();
-    wait(3000, msec);
-    moveIntake(0, 0);
-    chassis.move(-10);
-    longGoal();
-    chassis.move(10);
-    wait(3000, msec);
-
-    chassis.set_heading(-90);
-    chassis.move(-11);
-    chassis.turn(43);
-    chassis.move(18);
-    chassis.turn(23);
-    chassis.move(12);
-    outtake();
-    chassis.turn(13);
-    chassis.move(42);
-    wait(300, msec);
-    chassis.move(-10);
-    
-
-    //-11
-    //132 from last ang
-    //2 from prev ang
-    //18 to not have scraper touch wall
-
-    //-20s kinda thing (ang)
-    // 12 fwd
-    // -7 maybe?
-    // bulldoze
-    //
-
+    // auto abdulasiz = []() { wait(300, msec); scraper.set(true);}; thread tabdulasiz = thread(abdulasiz);
+    // chassis.lin_max = 6; chassis.arc(30, 90);
+    // intake();
 }

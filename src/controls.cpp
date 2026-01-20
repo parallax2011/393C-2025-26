@@ -47,7 +47,7 @@ void moveIntake(int inlv, int inuv) {
 }
 
 void intake() { hood.set(false); trapdoor.set(false); moveIntake(-12, -12); }
-void scoreLowGoal() { }
+void scoreLowGoal() { hood.set(false); trapdoor.set(false); moveIntake(12, 12); }
 void scoreMidGoal() { hood.set(false); trapdoor.set(true); moveIntake(-12, 6); }
 void scoreLongGoal() { hood.set(true); trapdoor.set(true); moveIntake(-12, -12); }
 void antiJam() { moveIntake(0, -12); }

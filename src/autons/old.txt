@@ -8,25 +8,25 @@ void left2() {
     chassis.set_drive_exit_conditions(0.5, 200, 2000);
     chassis.set_turn_constants(12, 0.3, 0, 2, 15);
 
-    chassis.drive_max_voltage = 7;
+    chassis.lin_max = 7;
 
     // match loader
-    chassis.drive_timeout = 900;//timeout=900 for v=12
+    chassis.lin_timeout = 900;//timeout=900 for v=12
     chassis.move(32.3, 12); //straight=32.3
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
     basket();
     // wait(300, msec);
     // auto t1 = []() { scraper.set(true); }; thread T1 = thread(t1);
-    chassis.turn_timeout = 700;
+    chassis.ang_timeout = 700;
     chassis.turn(-83);
-    chassis.turn_timeout = 1000;
+    chassis.ang_timeout = 1000;
     scraper.set(true);
     wait(300, msec);
-    chassis.drive_timeout = 1000;
+    chassis.lin_timeout = 1000;
     chassis.move(12, 4);//v=4
 
     // go to field 3 blocks
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
     chassis.move(-15, 12);//v=7
     scraper.set(false);
     chassis.turn(-206);
@@ -42,7 +42,7 @@ void left2() {
     chassis.move(9);
     wait(4000, msec);
     chassis.move(-10, 12);
-    chassis.drive_timeout = 5000;
+    chassis.lin_timeout = 5000;
     chassis.move(20, 12);
 }
 
@@ -55,25 +55,25 @@ void right2() {
     chassis.set_drive_exit_conditions(0.5, 200, 2000);
     chassis.set_turn_constants(12, 0.3, 0, 2, 15);
 
-    chassis.drive_max_voltage = 7;
+    chassis.lin_max = 7;
 
     // match loader
-    chassis.drive_timeout = 900;//timeout=900 for v=12
+    chassis.lin_timeout = 900;//timeout=900 for v=12
     chassis.move(30.8, 12); //straight=32.3
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
     basket();
     // wait(300, msec);
     // auto t1 = []() { scraper.set(true); }; thread T1 = thread(t1);
-    chassis.turn_timeout = 700;
+    chassis.ang_timeout = 700;
     chassis.turn(85);
-    chassis.turn_timeout = 1000;
+    chassis.ang_timeout = 1000;
     scraper.set(true);
     wait(300, msec);
-    chassis.drive_timeout = 1100;
+    chassis.lin_timeout = 1100;
     chassis.move(15, 4);//v=4
 
     // go to field 3 blocks
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
     chassis.move(-15, 12);//v=7
     scraper.set(false);
     chassis.turn(210);
@@ -89,7 +89,7 @@ void right2() {
     chassis.move(12);
     wait(4000, msec);
     chassis.move(-10, 12);
-    chassis.drive_timeout = 5000;
+    chassis.lin_timeout = 5000;
     chassis.move(20, 12);
 }
 
@@ -114,26 +114,26 @@ void LEFT_6LG_DESCORE() {
     chassis.set_drive_exit_conditions(0.75, 200, 2000);
 
     // blocks 4-6
-    chassis.drive_timeout = 1000;
+    chassis.lin_timeout = 1000;
     chassis.move(19, 6); //23, 21, 18, v=10
     wait(500, msec); // could take this out
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
 
     // long goal
     chassis.move(-20);
     scraper.set(false);
     // auto t3 = []() { wait(200, msec); longGoal(); }; thread T3 = thread(t3); //800
     chassis.turn(4); //8, 4
-    //chassis.drive_timeout = 2500;
-    chassis.drive_timeout = 600;
+    //chassis.lin_timeout = 2500;
+    chassis.lin_timeout = 600;
     // longGoal();
     chassis.move(5.5); //6, 6.5, 7.5, 8.5, // 143, 11, 8.5
     wait(1900, msec);
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
 
     // descore
     chassis.move(-2);
-    chassis.drive_max_voltage = 12;
+    chassis.lin_max = 12;
     chassis.set_drive_constants(9, 1.2, 0, 4.5, 0);
     setHeadingConst(9, 0.3, 2); //2.1, 1.7
     chassis.arc(-18.5, 90); //-19.2, -25, -22, -18.5
@@ -171,28 +171,28 @@ void RIGHT_DESCORE() {
     //chassis.set_drive_exit_conditions(0.75, 200, 2000);
 
     // blocks 4-6
-    chassis.drive_timeout = 1000;
+    chassis.lin_timeout = 1000;
     // chassis.set_drive_exit_conditions(0.5, 300, 2000);
     chassis.move(19, 6.5); //23, 21, 18, v=10
     chassis.set_drive_exit_conditions(0.75, 200, 2000);
     wait(500, msec); // could take this out
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
 
     // long goal
     chassis.move(-20);
     scraper.set(false);
     // auto t3 = []() { wait(200, msec); longGoal(); }; thread T3 = thread(t3); //800
     chassis.turn(-4); //8, 4
-    //chassis.drive_timeout = 2500;
-    chassis.drive_timeout = 600;
+    //chassis.lin_timeout = 2500;
+    chassis.lin_timeout = 600;
     // longGoal();
     chassis.move(5.6); //6, 6.5, 7.5, 8.5, // 143, 11, 8.5
     wait(2500, msec);
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
 
     // descore
     chassis.move(-2);
-    chassis.drive_max_voltage = 12;
+    chassis.lin_max = 12;
     chassis.set_drive_constants(9, 1.2, 0, 4.5, 0);
     setHeadingConst(9, 0.3, 2); //2.1, 1.7
     chassis.arc(-18, 90); //-19.2, -25, -22, -18.5
@@ -260,9 +260,9 @@ void autoLeft(std::string alliance) {
 
     // descore
     chassis.move(-2);
-    chassis.drive_max_voltage = 12;
+    chassis.lin_max = 12;
     chassis.set_drive_constants(9, 1.2, 0, 4.5, 0);
-    chassis.drive_timeout = 3000;
+    chassis.lin_timeout = 3000;
     setHeadingConst(9, 0.3, 1.7);
     chassis.arc(-18.5, 90);
     chassis.turn(0);
@@ -312,9 +312,9 @@ void autoRight(std::string alliance) {
     // descore
     chassis.move(-2);
     moveIntake(0, 0);
-    chassis.drive_max_voltage = 12;
+    chassis.lin_max = 12;
     chassis.set_drive_constants(9, 1.2, 0, 4.5, 0);
-    chassis.drive_timeout = 3000;
+    chassis.lin_timeout = 3000;
     setHeadingConst(9, 0.3, 1.7);
     chassis.arc(-18.5, 90);
     auto t700 = []() { descorer.set(true);}; thread T700 = thread(t700);
@@ -335,7 +335,7 @@ void autoSkills() {
     chassis.set_drive_exit_conditions(0.5, 200, 2000);
     chassis.set_turn_constants(12, 0.3, 0, 2, 15);
 
-    chassis.drive_max_voltage = 7;
+    chassis.lin_max = 7;
 
     // match loader
     chassis.move(32.3);
@@ -361,25 +361,25 @@ void autoSkills() {
     // get blocks, round 2
     chassis.move(-2);
     moveIntake(0, 0);
-    chassis.drive_max_voltage = 12;
+    chassis.lin_max = 12;
     chassis.set_drive_constants(9, 1.2, 0, 4.5, 0);
-    chassis.drive_timeout = 3000;
+    chassis.lin_timeout = 3000;
     setHeadingConst(9, 0.3, 1.7);
     chassis.arc(-34, 0); //-37
     chassis.turn(88);//90
     chassis.set_drive_constants(12, 1.2, 0, 4.5, 0); // 1.2,4.5
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
     setHeadingConst(6, 0.4, 1);
     basket();
-    chassis.drive_timeout = 4000;
+    chassis.lin_timeout = 4000;
     chassis.move(82, 5);
 
     // wall reset 1
     chassis.turn(180);
-    chassis.drive_timeout = 2750;
+    chassis.lin_timeout = 2750;
     chassis.move(-60, 4);
     chassis.set_heading(0);
-    chassis.drive_timeout = 2000;
+    chassis.lin_timeout = 2000;
     chassis.move(20.7, 4);
 
     // get 6 blocks from match loader 2
@@ -420,11 +420,11 @@ void autoSkills() {
     chassis.turn(0);
     chassis.move(-10);
     chassis.set_heading(0);
-    chassis.drive_timeout = 3000;
+    chassis.lin_timeout = 3000;
     basket();
     chassis.move(135, 8);
     chassis.turn(75);
     moveIntake(-12, 0);
-    chassis.drive_timeout = 5000;
+    chassis.lin_timeout = 5000;
     chassis.move(50);
 }

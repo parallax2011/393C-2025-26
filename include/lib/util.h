@@ -24,4 +24,4 @@ float left_voltage_scaling(float drive_output, float heading_output);
 
 float right_voltage_scaling(float drive_output, float heading_output);
 
-float clamp_min_voltage(float drive_output, float drive_min_voltage);
+float clamp_min_voltage(float drive_output, float lin_min);

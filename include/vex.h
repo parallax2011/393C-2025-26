@@ -43,9 +43,7 @@ extern Drive chassis;
 //using namespace vex;
 using namespace std;
 
-
 void filter_block();
-
 void filter_red();
 void filter_blue();
 
@@ -56,3 +54,10 @@ void filter_blue();
 
 #define repeat(iterations)                                                     \
   for (int iterator = 0; iterator < iterations; iterator++)
+
+// extern int settledState;
+
+// extern float initOvershoot;
+// float esseOvershoot;
+
+// extern std::chrono::duration<double> accelTime;

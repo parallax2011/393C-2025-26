@@ -8,6 +8,7 @@
 #include <functional>
 
 using namespace vex;
+using namespace std;
 competition Competition;
 
 /**
@@ -20,12 +21,26 @@ competition Competition;
 //int auton = 0;
 bool auto_started = false;
 
-thread t1283789;
+    // auto start = std::chrono::high_resolution_clock::now();
+
+    // // task you want to measure
+    // for (volatile int i = 0; i < 100000000; i++);
+
+    // auto end = std::chrono::high_resolution_clock::now();
+
+    // std::chrono::duration<double> elapsed = end - start;
+    // std::cout << "Time: " << elapsed.count() << " seconds\n";
 
 void telemetry() {
     while (1) {
-        std::cout << "pos:              " << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
-        std::cout << "heading:          " << imu.rotation() << std::endl << std::endl;
+
+        // cout << "Accel time:         " << accelTime.count() << "s" << endl; 
+        // cout << "Oscil time:       " << "s" << endl;
+        // cout << "INIT overshoot:    " << initOvershoot << "in" << endl;
+        // cout << "ESSE overshoot:    " << esseOvershoot << "in" << endl;
+
+        cout << "Pos [in]:     " << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
+        // cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
         // std::cout << "drive:            " << (l.position(deg) + r.position(deg))/2 << std::endl;
         // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
         // std::cout << "Position [deg]:         " << intake.position(deg) << std::endl;
@@ -47,8 +62,8 @@ void pre_auton() {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
     //default_constants();
-
-    telemetry();
+    thread TLM = thread(telemetry);
+    
     imu.calibrate(3000);
     wait(3000, msec);
 
@@ -70,26 +85,26 @@ void autonomous(void) {
     imu.resetHeading();
     imu.resetRotation();
 
-    chassis.set_drive_exit_conditions(0.5, 300, 2000);
-    chassis.set_drive_constants(12, 1, 0, 6, 0); // 1.2,4.5
-    chassis.set_heading_constants(6, 0.4, 0, 1, 0);
+    chassis.setLinExits(1.5, 300, 2000);
+    chassis.setLinPID(12, 1, 0, 7, 0); // 1.2,4.5
+    chassis.setThetaPID(6, 0.4, 0, 1, 0); // kp0.4, kd1
 
-    chassis.set_turn_exit_conditions(0.8, 300, 3000);
-    chassis.set_turn_constants(12, 0.37, 0.03, 3.1, 15); // 45-90
+    chassis.setAngExits(0.8, 300, 3000);
+
+    // chassis.set_turn_constants(12, 0.37, 0.03, 3.1, 15); // 120-180s
+    chassis.setAngPID(12, 0.37, 0.03, 3.1, 15); // 45-90
     //chassis.set_turn_constants(12, 0.37, 0.03, 2.9, 5); // smaller than 30
 
-
-    if (imu.installed()) {
-        chassis.turn(180);
-    }
-    //chassis.move(20);
     
-    
-    // chassis.move(50);
-    // chassis.turn(0);
-    // chassis.move(25);
-    // chassis.move(-90);
 
+    autoSKILLS();
+
+    // if (imu.installed()) {
+    //     chassis.turn(90);
+    //     chassis.turn(180);
+    //     chassis.turn(-90);
+    //     chassis.turn(0);
+    // }
 }
 
 /*---------------------------------------------------------------------------*/
@@ -146,23 +161,6 @@ void get_block(std::string targetColor) {
 }
 bool STATE = false;
 
-// void ctrlKillSwitch() {
-//     STATE = !STATE;
-//     if (STATE) {
-//         t1283789.interrupt();
-//         controller1.Screen.clearScreen();
-//         controller1.Screen.setCursor(1,1);
-//         controller1.Screen.print("NO SORTING");
-//     } else {
-//         t1283789 = thread(filterRed);
-//         controller1.Screen.clearScreen();
-//         controller1.Screen.setCursor(1,1);
-//         controller1.Screen.print("YES SORTING");
-//     }
-
-// }
-//false = blue;
-
 void filter_blue() { get_block("blue"); }
 void filter_red() { get_block("red"); }
 
@@ -173,19 +171,23 @@ void usercontrol(void) {
     l.setStopping(coast);
     r.setStopping(coast);
 
+
+    inf.setMaxTorque(100, percent);
+    inb.setMaxTorque(100, percent);
+
     optic.setLight(ledState::on);
     optic.setLightPower(100);
     optic.objectDetectThreshold(50);
 
     thread tColorSortAlg1 = thread(filterRed);
 
-    bool R1; bool R2; bool L1; bool L2;
+    bool R1; bool R2; bool L1; bool L2; bool B;
 
     while (1) {
 
         // intake ping booleans
         R1 = controller1.ButtonR1.pressing(); R2 = controller1.ButtonR2.pressing();
-        L1 = controller1.ButtonL1.pressing(); L2 = controller1.ButtonL2.pressing();
+        L1 = controller1.ButtonL1.pressing(); L2 = controller1.ButtonL2.pressing(); B = controller1.ButtonB.pressing();
 
         // chassis
         arcade(controller1.Axis3.position(), // forward
@@ -195,21 +197,22 @@ void usercontrol(void) {
         );
 
         // intake
-        if (R1 and !L1 and filtering) {
-            // run filter eject
-            moveIntake(0, 0);
+        // if (R1 and !L1 and filtering) {
+        //     // run filter eject
+        //     moveIntake(0, 0);
             
-            if (vex::timer::system() > filterTimer) {
-                filtering = false;
-                moveIntake(0, 0); //stop for adjustment
-            }
-        }
+        //     if (vex::timer::system() > filterTimer) {
+        //         filtering = false;
+        //         moveIntake(0, 0); //stop for adjustment
+        //     }
+        // }
 
-        else if (R1 and L1) { descorer.set(false); outtake(); }
-        else if (R1 and !L1 and enableIntake) { descorer.set(false); basket(); }
-        else if (R2 and L1) { descorer.set(false); highGoal(); }
-        else if (R2 and !L1) { descorer.set(false); longGoal(); }
+        if (R1 and L1) { descorer.set(false); scoreLowGoal(); }
+        else if (R1 and !L1 and enableIntake) { descorer.set(false); intake(); }
+        else if (R2 and L1) { descorer.set(false); scoreMidGoal(); }
+        else if (R2 and !L1) { descorer.set(false); scoreLongGoal(); }
         else if (L2) { descorer.set(true); }
+        else if (B) { descorer.set(false); hood.set(true); trapdoor.set(false); moveIntake(-12, -1);}
         else { descorer.set(false); moveIntake(0, 0); }
 
         wait(20, msec);

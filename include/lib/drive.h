@@ -39,34 +39,34 @@ public:
   encoder E_ForwardTracker;
   encoder E_SidewaysTracker;
 
-  float turn_max_voltage;
-  float turn_kp;
-  float turn_ki;
-  float turn_kd;
-  float turn_starti;
+  float ang_max;
+  float ang_kp;
+  float ang_ki;
+  float ang_kd;
+  float ang_starti;
 
-  float turn_settle_error;
-  float turn_settle_time;
-  float turn_timeout;
+  float ang_settle_error;
+  float ang_settle_time;
+  float ang_timeout;
 
-  float drive_min_voltage;
-  float drive_max_voltage;
-  float drive_kp;
-  float drive_ki;
-  float drive_kd;
-  float drive_starti;
+  float lin_min;
+  float lin_max;
+  float lin_kp;
+  float lin_ki;
+  float lin_kd;
+  float lin_starti;
 
-  float drive_settle_error;
-  float drive_settle_time;
-  float drive_timeout;
+  float lin_settle_error;
+  float lin_settle_time;
+  float lin_timeout;
 
-  float heading_max_voltage;
-  float heading_kp;
-  float heading_ki;
-  float heading_kd;
-  float heading_starti;
+  float theta_max;
+  float theta_kp;
+  float theta_ki;
+  float theta_kd;
+  float theta_starti;
 
-  float swing_max_voltage;
+  float swing_max;
   float swing_kp;
   float swing_ki;
   float swing_kd;
@@ -99,35 +99,36 @@ public:
 
   float get_right_position_in();
 
-  void set_turn_constants(float turn_max_voltage, float turn_kp, float turn_ki, float turn_kd, float turn_starti); 
-  void set_drive_constants(float drive_max_voltage, float drive_kp, float drive_ki, float drive_kd, float drive_starti);
-  void set_heading_constants(float heading_max_voltage, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
-  void set_swing_constants(float swing_max_voltage, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+  void setAngPID(float ang_max, float ang_kp, float ang_ki, float ang_kd, float ang_starti); 
+  void setLinPID(float lin_max, float lin_kp, float lin_ki, float lin_kd, float lin_starti);
+  void setThetaPID(float theta_max, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
+  void setSwingPID(float swing_max, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
   //void set_lift_constants(float lift_max_voltage, float lift_kp, float lift_ki, float lift_kd, float lift_starti);
 
-  void set_turn_exit_conditions(float turn_settle_error, float turn_settle_time, float turn_timeout);
-  void set_drive_exit_conditions(float drive_settle_error, float drive_settle_time, float drive_timeout);
-  void set_swing_exit_conditions(float swing_settle_error, float swing_settle_time, float swing_timeout);
+  void setAngExits(float ang_settle_error, float ang_settle_time, float ang_timeout);
+  void setLinExits(float lin_settle_error, float lin_settle_time, float lin_timeout);
+  void setSwingExits(float swing_settle_error, float swing_settle_time, float swing_timeout);
   //void set_lift_exit_conditions(float lift_settle_error, float lift_settle_time, float lift_timeout);
 
   void turn(float angle);
-  //void turn(float angle, float turn_max_voltage);
+  //void turn(float angle, float ang_max);
+  void kTurn(float angle, float ang_max, float ang_kp, float ang_ki, float ang_kd, float ang_starti);
   void turn(float angle, float type);
-  void turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout);
-  void turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout, float turn_kp, float turn_ki, float turn_kd, float turn_starti);
+  void turn_to_angle(float angle, float ang_max, float ang_settle_error, float ang_settle_time, float ang_timeout);
+  void turn_to_angle(float angle, float ang_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float ang_kp, float ang_ki, float ang_kd, float ang_starti);
 
   void move(float distance);
   void arc(float distance, float heading);
   void move(float distance, float max_voltage);
   void move(float distance, float max_voltage, float timeout);
-  void drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage);
-  void drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout);
-  void drive_distance(float distance, float heading, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
+  void drive_distance(float distance, float heading, float lin_max, float theta_max);
+  void drive_distance(float distance, float heading, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout);
+  void drive_distance(float distance, float heading, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
 
   void left_swing_to_angle(float angle);
-  void left_swing_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+  void left_swing_to_angle(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
   void right_swing_to_angle(float angle);
-  void right_swing_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+  void right_swing_to_angle(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
   //void lift_to_position(float position, float lift_max_voltage, float lift_settle_error, float lift_settle_time, float lift_timeout, float lift_kp, float lift_ki, float lift_kd, float lift_starti);
 
   void swing(int direction, float angle);
@@ -146,26 +147,26 @@ public:
   void drive_stop(vex::brakeType mode);
 
   void drive_to_point(float X_position, float Y_position);
-  void drive_to_point(float X_position, float Y_position, float drive_min_voltage, float drive_max_voltage, float heading_max_voltage);
-  void drive_to_point(float X_position, float Y_position, float drive_min_voltage, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout);
-  void drive_to_point(float X_position, float Y_position, float drive_min_voltage, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
+  void drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float theta_max);
+  void drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout);
+  void drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
   
   void drive_to_pose(float X_position, float Y_position, float angle);
-  void drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float drive_min_voltage);
-  void drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float drive_min_voltage, float drive_max_voltage, float heading_max_voltage);
-  void drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float drive_min_voltage, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout);
-  void drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float drive_min_voltage, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
+  void drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min);
+  void drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float theta_max);
+  void drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout);
+  void drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
   
   void turn_to_point(float X_position, float Y_position);
   void turn_to_point(float X_position, float Y_position, float extra_angle_deg);
-  void turn_to_point(float X_position, float Y_position, float extra_angle_deg, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout);
-  void turn_to_point(float X_position, float Y_position, float extra_angle_deg, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout, float turn_kp, float turn_ki, float turn_kd, float turn_starti);
+  void turn_to_point(float X_position, float Y_position, float extra_angle_deg, float ang_max, float ang_settle_error, float ang_settle_time, float ang_timeout);
+  void turn_to_point(float X_position, float Y_position, float extra_angle_deg, float ang_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float ang_kp, float ang_ki, float ang_kd, float ang_starti);
   
   void holonomic_drive_to_pose(float X_position, float Y_position);
   void holonomic_drive_to_pose(float X_position, float Y_position, float angle);
-  void holonomic_drive_to_pose(float X_position, float Y_position, float angle, float drive_max_voltage, float heading_max_voltage);
-  void holonomic_drive_to_pose(float X_position, float Y_position, float angle, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout);
-  void holonomic_drive_to_pose(float X_position, float Y_position, float angle, float drive_max_voltage, float heading_max_voltage, float drive_settle_error, float drive_settle_time, float drive_timeout, float drive_kp, float drive_ki, float drive_kd, float drive_starti, float heading_kp, float heading_ki, float heading_kd, float heading_starti);
+  void holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float theta_max);
+  void holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout);
+  void holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
 
   void arcade(int deadzone, bool curve, int power);
   void tank();
@@ -174,17 +175,3 @@ public:
 
 // chassis
 void moveChassis(float left, float right);
-
-// intake
-void moveIntake2(float volts);
-
-// lift
-void moveLift(float position, float vel);
-void lift_reset();
-void lift_grab();
-void lift_score();
-void liftMax();
-void intakeMaxFWD();
-void intakeMaxREV();
-void intakeStop();
-void liftCoast();
