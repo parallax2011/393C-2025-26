@@ -18,42 +18,62 @@ void default_constants() {
 
 void autoSKILLS() {
 
-    // match loader 1
-    std::cout << "-----------------------------------------" << std::endl;
-    chassis.move(34); std::cout << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
-    chassis.kTurn(-88.5, 12, .33, .035, 3.1, 15);
-    std::cout << std::endl << "After turn:       " << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
-    auto task0 = []() {scraper.set(true); intake();}; thread t_task0 = thread(task0);
-    wait(2000, msec);
-    chassis.lin_timeout = 2000; chassis.lin_max = 6; chassis.arc(6, -87.8);
+    // // match loader 1
+    // std::cout << "-----------------------------------------" << std::endl;
+    // chassis.move(33); std::cout << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
+    // chassis.kTurn(-88.5, 12, .33, .035, 3.1, 15);
+    // std::cout << std::endl << "After turn:       " << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
+    // auto task0 = []() {scraper.set(true); intake();}; thread t_task0 = thread(task0);
+    // wait(600, msec);
+    // chassis.lin_timeout = 2000; chassis.lin_max = 6; chassis.arc(6, -87.8);
+    // wait(1500, msec);
+    // std::cout << "After loading:    " << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
+
+    // // first scoring on long goal 1
+    // chassis.move(-10); 
+    // scraper.set(false);
+    // wait(200, msec);
+    // chassis.turn(0); std::cout << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
+
+    // // arc code
+    // chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(10.5, 0.4, 0, 1, 0);
+    // auto task1 = []() {descorer.set(true);}; thread t_task1 = thread(task1);
+    // chassis.arc(75, 84.5);
+    // chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(8.5, 0.4, 0, 1, 0); chassis.arc(24, 180);
+
+    // auto task2 = []() {descorer.set(false);}; thread t_task2 = thread(task2);
+    // double dist1 = dist.objectDistance(inches); std::cout << "DISTANCE: " << dist1 << std::endl; chassis.move(20.3 - dist1);
+    // wait(200, msec);
+    // chassis.turn(90);
+    // auto task3 = []() {scoreLongGoal();}; thread t_task3 = thread(task3);
+    // chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(6, 0.4, 0, 1, 0); chassis.lin_timeout = 2000; chassis.move(-22, 4);
+    // wait(1000, msec);
+    // // chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(6, 0.4, 0, 1, 0); chassis.lin_timeout = 600; chassis.move(-20, 6);
+
+    // // match loader 2
+    // t_task3.interrupt(); auto task4 = []() {wait(50, msec); scraper.set(true); intake();}; thread t_task4 = thread(task4);
+    // chassis.move(28.75, 4);
+    // wait(1500, msec);
+
+    // // 2nd score on long goal 1
+    // auto task5 = []() { hood.set(true); wait(2000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task5 = thread(task5);
+    // chassis.move(-28.75, 6);
+    // wait(1800, msec);
+
+    // match loader 3
+    hood.set(true);
+    chassis.lin_timeout = 2000; chassis.move(-10);
+    chassis.move(15);
+    chassis.turn(-88.5); //-1.5; check angle when uncommenting other code
+    chassis.lin_timeout = 4000; chassis.move(-100);
+    double dist2 = dist.objectDistance(inches); std::cout << "DISTANCE: " << dist2 << std::endl; chassis.move(18.8 - dist2); //20.3-dist2
+    chassis.turn(0);
+    auto task6 = []() {scraper.set(true); intake();}; thread t_task6 = thread(task6);
+    chassis.move(28, 4);
     wait(1500, msec);
-    std::cout << "After loading:    " << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
-
-    // first scoring on long goal 1
-    chassis.move(-10); 
-    scraper.set(false);
-    wait(200, msec);
-    chassis.turn(0); std::cout << imu.rotation() << " " << chassis.get_absolute_heading() - 360 << std::endl;
-
-    // arc code
-    chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(10.5, 0.4, 0, 1, 0);
-    auto task1 = []() {descorer.set(true);}; thread t_task1 = thread(task1);
-    chassis.arc(75, 84.5);
-    chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(8.5, 0.4, 0, 1, 0); chassis.arc(24, 180);
-
-    auto task2 = []() {descorer.set(false);}; thread t_task2 = thread(task2);
-    double dist1 = dist.objectDistance(inches); std::cout << "DISTANCE: " << dist1 << std::endl; chassis.move(18.5 - dist1);
-    wait(200, msec);
-    chassis.turn(90);
-    auto task3 = []() {scoreLongGoal();}; thread t_task3 = thread(task3);
-    chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(6, 0.4, 0, 1, 0); chassis.lin_timeout = 2000; chassis.move(-22, 4);
-    wait(1000, msec);
-    // chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(6, 0.4, 0, 1, 0); chassis.lin_timeout = 600; chassis.move(-20, 6);
-
-    // match loader 2
-    t_task3.interrupt(); auto task4 = []() {wait(50, msec); scraper.set(true); intake();}; thread t_task4 = thread(task4);
-    chassis.move(27.5, 4);
-    wait(1000, msec);
+    auto task7 = []() { hood.set(true); wait(2000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task7 = thread(task7);
+    chassis.lin_max = 6; chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(6, 0.4, 0, 1, 0); chassis.lin_timeout = 2000; chassis.arc(-28.75, 1.5);//91.5
+    wait(1800, msec);
 
     // // match loader 2
     // chassis.set_drive_constants(12, 1, 0, 7, 0); // 1.2,4.5

@@ -40,7 +40,7 @@ void telemetry() {
         // cout << "ESSE overshoot:    " << esseOvershoot << "in" << endl;
 
         cout << "Pos [in]:     " << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
-        // cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
+        cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
         // std::cout << "drive:            " << (l.position(deg) + r.position(deg))/2 << std::endl;
         // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
         // std::cout << "Position [deg]:         " << intake.position(deg) << std::endl;
