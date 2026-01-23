@@ -4,8 +4,7 @@ void ctrlScraper();
 void ctrlDescorer();
 void ctrlKillSwitch();
 
-void arcade();
-void arcade(int forward, int turn, bool enableTurnCurve, float deadbandWidth);
+void arcadeControl();
 void moveIntake(int inlv, int inuv);
 
 void intake();

@@ -181,20 +181,17 @@ void usercontrol(void) {
 
     thread tColorSortAlg1 = thread(filterRed);
 
-    bool R1; bool R2; bool L1; bool L2; bool B;
+    bool R1; bool R2; bool L1; bool L2; bool B; bool X;
 
     while (1) {
 
         // intake ping booleans
         R1 = controller1.ButtonR1.pressing(); R2 = controller1.ButtonR2.pressing();
-        L1 = controller1.ButtonL1.pressing(); L2 = controller1.ButtonL2.pressing(); B = controller1.ButtonB.pressing();
+        L1 = controller1.ButtonL1.pressing(); L2 = controller1.ButtonL2.pressing(); 
+        B = controller1.ButtonB.pressing(); X = controller1.ButtonX.pressing();
 
         // chassis
-        arcade(controller1.Axis3.position(), // forward
-                controller1.Axis1.position(), // turn
-                false, // enabling turn curves
-                5 // deadzone=5
-        );
+        arcadeControl();
 
         // intake
         // if (R1 and !L1 and filtering) {
@@ -207,13 +204,13 @@ void usercontrol(void) {
         //     }
         // }
 
-        if (R1 and L1) { descorer.set(false); scoreLowGoal(); }
-        else if (R1 and !L1 and enableIntake) { descorer.set(false); intake(); }
-        else if (R2 and L1) { descorer.set(false); scoreMidGoal(); }
-        else if (R2 and !L1) { descorer.set(false); scoreLongGoal(); }
-        else if (L2) { descorer.set(true); }
-        else if (B) { descorer.set(false); hood.set(true); trapdoor.set(false); moveIntake(-12, -1);}
-        else { descorer.set(false); moveIntake(0, 0); }
+        if (R1 and L1) {  scoreLowGoal(); }
+        else if (R1 and !L1 and enableIntake) { intake(); }
+        else if (R2 and L1) { scoreMidGoal(); }
+        else if (R2 and !L1) { scoreLongGoal(); }
+        else if (B) { hood.set(true); trapdoor.set(false); moveIntake(-12, -12); } // manual sort eject
+        else if (X) { trapdoor.set(true); moveIntake(12, 12); } // anti-jam
+        else {  moveIntake(0, 0); }
 
         wait(20, msec);
     }
