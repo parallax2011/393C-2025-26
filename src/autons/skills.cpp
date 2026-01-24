@@ -5,16 +5,7 @@
 class Drive;
 extern Drive chassis;
 
-void default_constants() {      
-    // chassis.set_drive_constants(12, 1.2, 0, 4.5, 0); // 1.2,4.5
-    // chassis.set_heading_constants(6, .4, 0, 1, 0);
-    // chassis.set_turn_constants(12, 0.4, 0.03, 3.1, 15);
-    // chassis.set_swing_constants(12, 1, 0.01, 6, 0);
-
-    // chassis.set_drive_exit_conditions(0.5, 100, 2000);
-    // chassis.set_turn_exit_conditions(0.5, 100, 1000);
-    // chassis.set_swing_exit_conditions(1, 200, 3000);
-}
+void default_constants() {}
 
 void autoSKILLS() {
 
@@ -58,7 +49,7 @@ void autoSKILLS() {
     auto task5 = []() { hood.set(true); wait(1000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task5 = thread(task5);
     chassis.move(-28.75, 6);
     wait(1300, msec);//1800
-    chassis.set_heading(0); imu.resetHeading(); imu.resetRotation();
+    chassis.set_heading(1.5); imu.resetHeading(); imu.resetRotation();
 
     // match loader 3
 
@@ -110,7 +101,6 @@ void autoSKILLS() {
 
     // clearing park zone and parking
     scoreLowGoal();
-    chassis.setLinPID(12, 1, 0, 7, 0); chassis.setThetaPID(6, 0.4, 0, 1, 0);chassis.arc(50, 79);
     wait(500, msec);
     chassis.move(30);
 }

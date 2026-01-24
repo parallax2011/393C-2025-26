@@ -39,8 +39,8 @@ void telemetry() {
         // cout << "INIT overshoot:    " << initOvershoot << "in" << endl;
         // cout << "ESSE overshoot:    " << esseOvershoot << "in" << endl;
 
-        cout << "Pos [in]:     " << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
-        cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
+        // cout << "Pos [in]:     " << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
+        // cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
         // std::cout << "drive:            " << (l.position(deg) + r.position(deg))/2 << std::endl;
         // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
         // std::cout << "Position [deg]:         " << intake.position(deg) << std::endl;
@@ -94,17 +94,11 @@ void autonomous(void) {
     // chassis.set_turn_constants(12, 0.37, 0.03, 3.1, 15); // 120-180s
     chassis.setAngPID(12, 0.37, 0.03, 3.1, 15); // 45-90
     //chassis.set_turn_constants(12, 0.37, 0.03, 2.9, 5); // smaller than 30
-
     
-
-    autoSKILLS();
-
-    // if (imu.installed()) {
-    //     chassis.turn(90);
-    //     chassis.turn(180);
-    //     chassis.turn(-90);
-    //     chassis.turn(0);
-    // }
+    //autoLSAWP();
+    autoLeft();
+    //autoRight();
+    //autoSKILLS();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -181,36 +175,25 @@ void usercontrol(void) {
 
     thread tColorSortAlg1 = thread(filterRed);
 
-    bool R1; bool R2; bool L1; bool L2; bool B; bool X;
+    bool R1; bool R2; bool L1; bool L2; bool B; bool X; bool A;
 
     while (1) {
 
-        // intake ping booleans
         R1 = controller1.ButtonR1.pressing(); R2 = controller1.ButtonR2.pressing();
         L1 = controller1.ButtonL1.pressing(); L2 = controller1.ButtonL2.pressing(); 
-        B = controller1.ButtonB.pressing(); X = controller1.ButtonX.pressing();
+        B = controller1.ButtonB.pressing(); X = controller1.ButtonX.pressing(); A = controller1.ButtonA.pressing();
 
-        // chassis
-        arcadeControl();
+        arcadeControl(); // chassis
 
         // intake
-        // if (R1 and !L1 and filtering) {
-        //     // run filter eject
-        //     moveIntake(0, 0);
-            
-        //     if (vex::timer::system() > filterTimer) {
-        //         filtering = false;
-        //         moveIntake(0, 0); //stop for adjustment
-        //     }
-        // }
-
-        if (R1 and L1) {  scoreLowGoal(); }
-        else if (R1 and !L1 and enableIntake) { intake(); }
-        else if (R2 and L1) { scoreMidGoal(); }
-        else if (R2 and !L1) { scoreLongGoal(); }
-        else if (B) { hood.set(true); trapdoor.set(false); moveIntake(-12, -12); } // manual sort eject
-        else if (X) { trapdoor.set(true); moveIntake(12, 12); } // anti-jam
-        else {  moveIntake(0, 0); }
+        if (R1 and L1)                          { scoreLowGoal(); }
+        else if (R1 and !L1 and enableIntake)   { intake(); }
+        else if (R2 and L1)                     { scoreMidGoal(); }
+        else if (R2 and !L1)                    { scoreLongGoal(); }
+        else if (B)                             { hood.set(true); trapdoor.set(false); moveIntake(-12, -12); } // manual sorting
+        else if (X)                             { trapdoor.set(true); moveIntake(12, 12); } // antijam
+        else if (A)                             {  }
+        else                                    {  moveIntake(0, 0); }
 
         wait(20, msec);
     }

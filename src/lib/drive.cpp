@@ -336,6 +336,15 @@ void Drive::arc(float distance, float heading){
   drive_distance(distance, heading, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
 }
 
+void Drive::arc(float distance, float heading, float timeout){
+  drive_distance(distance, heading, lin_max, theta_max, lin_settle_error, lin_settle_time, timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+}
+
+
+void Drive::arc(float distance, float heading, float max, float thetaMax, float timeout){
+  drive_distance(distance, heading, max, thetaMax, lin_settle_error, lin_settle_time, timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+}
+
 void Drive::move(float distance, float max_voltage) {
   drive_distance(distance, get_absolute_heading(), max_voltage, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
 }

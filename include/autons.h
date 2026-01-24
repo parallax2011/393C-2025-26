@@ -2,5 +2,8 @@
 
 void default_constants();
 
-
+void autoLSAWP();
 void autoSKILLS();
+void autoRight();
+
+void autoLeft();

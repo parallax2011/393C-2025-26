@@ -119,6 +119,8 @@ public:
 
   void move(float distance);
   void arc(float distance, float heading);
+  void arc(float distance, float heading, float timeout);
+  void arc(float distance, float heading, float max, float thetaMax, float timeout);
   void move(float distance, float max_voltage);
   void move(float distance, float max_voltage, float timeout);
   void drive_distance(float distance, float heading, float lin_max, float theta_max);
