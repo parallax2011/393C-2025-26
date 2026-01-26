@@ -10,6 +10,8 @@ HOLONOMIC_TWO_ENCODER, HOLONOMIC_TWO_ROTATION};
  * Eight flavors of odom and six custom motion algorithms.
  */
 
+
+
 class Drive
 {
 private:
@@ -39,8 +41,8 @@ public:
   encoder E_ForwardTracker;
   encoder E_SidewaysTracker;
 
-  float ang_max;
-  float ang_kp;
+  float turn_max;
+  float turn_kp;
   float ang_ki;
   float ang_kd;
   float ang_starti;
@@ -76,53 +78,49 @@ public:
   float swing_settle_time;
   float swing_timeout;
 
-  // float lift_max_voltage;
-  // float lift_kp;
-  // float lift_ki;
-  // float lift_kd;
-  // float lift_starti;
-
-  // float lift_settle_error;
-  // float lift_settle_time;
-  // float lift_timeout;
-
   float boomerang_lead;
   float boomerang_setback;
 
   Drive(enum::drive_setup drive_setup, motor_group DriveL, motor_group DriveR, int gyro_port, float wheel_diameter, float wheel_ratio, float gyro_scale, int DriveLF_port, int DriveRF_port, int DriveLB_port, int DriveRB_port, int ForwardTracker_port, float ForwardTracker_diameter, float ForwardTracker_center_distance, int SidewaysTracker_port, float SidewaysTracker_diameter, float SidewaysTracker_center_distance);
 
-  void drive_with_voltage(float left_voltage, float right_voltage);
+  void spinVolts(float left, float right);
 
-  float get_absolute_heading();
+  float getAbsTheta();
+  float getLeftPos();
+  float getRightPos();
 
-  float get_left_position_in();
+  void setTurn(float turn_max, float turn_kp, float ang_ki, float ang_kd, float ang_starti); 
+  void setLin(float lin_max, float lin_kp, float lin_ki, float lin_kd, float lin_starti);
+  void setAng(float theta_max, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
+  void setSwing(float swing_max, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
 
-  float get_right_position_in();
-
-  void setAngPID(float ang_max, float ang_kp, float ang_ki, float ang_kd, float ang_starti); 
-  void setLinPID(float lin_max, float lin_kp, float lin_ki, float lin_kd, float lin_starti);
-  void setThetaPID(float theta_max, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
-  void setSwingPID(float swing_max, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
-  //void set_lift_constants(float lift_max_voltage, float lift_kp, float lift_ki, float lift_kd, float lift_starti);
-
-  void setAngExits(float ang_settle_error, float ang_settle_time, float ang_timeout);
+  void setTurnExits(float ang_settle_error, float ang_settle_time, float ang_timeout);
   void setLinExits(float lin_settle_error, float lin_settle_time, float lin_timeout);
   void setSwingExits(float swing_settle_error, float swing_settle_time, float swing_timeout);
-  //void set_lift_exit_conditions(float lift_settle_error, float lift_settle_time, float lift_timeout);
 
   void turn(float angle);
-  //void turn(float angle, float ang_max);
-  void kTurn(float angle, float ang_max, float ang_kp, float ang_ki, float ang_kd, float ang_starti);
-  void turn(float angle, float type);
-  void turn_to_angle(float angle, float ang_max, float ang_settle_error, float ang_settle_time, float ang_timeout);
-  void turn_to_angle(float angle, float ang_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float ang_kp, float ang_ki, float ang_kd, float ang_starti);
+  void turn(float angle, float max);
+  void turn(float angle, float max, float timeout);
+  void turn(float angle, float max, float settleError, float settleTime, float timeout);
+  void kTurn(float angle, float turn_max, float turn_kp, float ang_ki, float ang_kd, float ang_starti);
+  void turn_to_angle(float angle, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout);
+  void turn_to_angle(float angle, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float turn_kp, float ang_ki, float ang_kd, float ang_starti);
 
-  void move(float distance);
+  void move(float dist);
+  void move(float dist, float max);
+  void move(float dist, float max, float timeout);
+  void move(float dist, float max, float settleError, float settleTime, float timeout);
+
+//   struct ArcParams {
+//   float linMax  = 0;        // 0 means "use default"
+//   float angMax  = 0;
+//   float timeout = 0;
+// };
+
   void arc(float distance, float heading);
+//   void arc(float distance, float heading, const ArcParams& p);
   void arc(float distance, float heading, float timeout);
   void arc(float distance, float heading, float max, float thetaMax, float timeout);
-  void move(float distance, float max_voltage);
-  void move(float distance, float max_voltage, float timeout);
   void drive_distance(float distance, float heading, float lin_max, float theta_max);
   void drive_distance(float distance, float heading, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout);
   void drive_distance(float distance, float heading, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
@@ -161,8 +159,8 @@ public:
   
   void turn_to_point(float X_position, float Y_position);
   void turn_to_point(float X_position, float Y_position, float extra_angle_deg);
-  void turn_to_point(float X_position, float Y_position, float extra_angle_deg, float ang_max, float ang_settle_error, float ang_settle_time, float ang_timeout);
-  void turn_to_point(float X_position, float Y_position, float extra_angle_deg, float ang_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float ang_kp, float ang_ki, float ang_kd, float ang_starti);
+  void turn_to_point(float X_position, float Y_position, float extra_angle_deg, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout);
+  void turn_to_point(float X_position, float Y_position, float extra_angle_deg, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float turn_kp, float ang_ki, float ang_kd, float ang_starti);
   
   void holonomic_drive_to_pose(float X_position, float Y_position);
   void holonomic_drive_to_pose(float X_position, float Y_position, float angle);

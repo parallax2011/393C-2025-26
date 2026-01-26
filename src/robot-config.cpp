@@ -43,9 +43,6 @@ controller controller1;
 #define PORT_RB PORT18 //11
 #define PORT_INTAKE_FRONT PORT1
 #define PORT_INTAKE_BACK PORT9
-// #define PORT_INTAKE_LOWER PORT20
-// #define PORT_INTAKE_UPPER PORT9
-// #define PORT_INTAKE_BACK PORT7
 
 #define PORT_IMU PORT6
 #define PORT_OPTICAL PORT8
@@ -59,12 +56,8 @@ motor rf = motor(PORT_RF, BLUE, true); //t
 motor rm = motor(PORT_RM, BLUE, false); //f
 motor rb = motor(PORT_RB, BLUE, false); //f
 
-// 9/14 config
-// motor inl = motor(PORT_INTAKE_LOWER, BLUE, false); // intake lower 11w
-// motor inu = motor(PORT_INTAKE_UPPER, BLUE, false); // intake upper 5.5w
-// motor inb = motor(PORT_INTAKE_BACK, BLUE, true); // intake back 5.5w
-motor inf = motor(PORT_INTAKE_FRONT, BLUE, false); // intake lower 11w
-motor inb = motor(PORT_INTAKE_BACK, BLUE, false); // intake upper 11w,
+motor inf = motor(PORT_INTAKE_FRONT, BLUE, false);
+motor inb = motor(PORT_INTAKE_BACK, BLUE, false);
 
 motor_group l = motor_group(lf, lm, lb);
 motor_group r = motor_group(rf, rm, rb);
@@ -79,10 +72,6 @@ digital_out scraper = digital_out(Brain.ThreeWirePort.A);
 digital_out hood = digital_out(Brain.ThreeWirePort.B);
 digital_out trapdoor = digital_out(Brain.ThreeWirePort.G);
 digital_out descorer = digital_out(Brain.ThreeWirePort.C);
-
-// digital_out gate = digital_out(Brain.ThreeWirePort.A);
-// digital_out parker = digital_out(Brain.ThreeWirePort.C);
-// digital_out pto = digital_out(Brain.ThreeWirePort.F);
 
 void vexcodeInit( void ) {
   // nothing to initialize

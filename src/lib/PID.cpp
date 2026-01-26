@@ -11,7 +11,7 @@
  * @param starti Maximum error to start integrating.
  */
 
-PID::PID(float error, float kp, float ki, float kd, float starti) :
+pid::pid(float error, float kp, float ki, float kd, float starti) :
     error(error),
     kp(kp),
     ki(ki),
@@ -37,7 +37,7 @@ PID::PID(float error, float kp, float ki, float kd, float starti) :
  * @param timeout Time after which to give up and move on.
  */
 
-PID::PID(float error, float kp, float ki, float kd, float starti, 
+pid::pid(float error, float kp, float ki, float kd, float starti, 
          float settle_error, float settle_time, float timeout):
     error(error),
     kp(kp),
@@ -65,7 +65,7 @@ PID::PID(float error, float kp, float ki, float kd, float starti,
  * @param update_period Loop delay time in ms.
  */
 
-PID::PID(float error, float kp, float ki, float kd, float starti, 
+pid::pid(float error, float kp, float ki, float kd, float starti, 
          float settle_error, float settle_time, float timeout, float update_period):
     error(error),
     kp(kp),
@@ -79,7 +79,7 @@ PID::PID(float error, float kp, float ki, float kd, float starti,
 {};
 
 /**
- * Computes the output power based on the error.
+ * calcs the output power based on the error.
  * Typical PID calculation with some optimizations: When the robot crosses
  * error=0, the i-term gets reset to 0. And, of course, the robot only
  * accumulates i-term when error is less than starti. Read about these at
@@ -89,7 +89,7 @@ PID::PID(float error, float kp, float ki, float kd, float starti,
  * @return Output power.
  */
 
-float PID::compute(float error) {
+float pid::calc(float error) {
     if (fabs(error) < starti) {
         accumulated_error += error;
     }
@@ -114,7 +114,7 @@ float PID::compute(float error) {
 }
 
 /**
- * Computes whether or not the movement has settled.
+ * calcs whether or not the movement has settled.
  * The robot is considered settled when error is less than settle_error 
  * for a duration of settle_time, or if the function has gone on for 
  * longer than timeout. Otherwise it is not settled.
@@ -122,7 +122,7 @@ float PID::compute(float error) {
  * @return Whether the movement is settled.
  */
 
-bool PID::is_settled() {
+bool pid::is_settled() {
     if (time_spent_running > timeout && timeout != 0) {
         return(true);
     } // If timeout does equal 0, the move will never actually time out. Setting timeout to 0 is the 

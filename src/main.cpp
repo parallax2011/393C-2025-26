@@ -21,16 +21,6 @@ competition Competition;
 //int auton = 0;
 bool auto_started = false;
 
-    // auto start = std::chrono::high_resolution_clock::now();
-
-    // // task you want to measure
-    // for (volatile int i = 0; i < 100000000; i++);
-
-    // auto end = std::chrono::high_resolution_clock::now();
-
-    // std::chrono::duration<double> elapsed = end - start;
-    // std::cout << "Time: " << elapsed.count() << " seconds\n";
-
 void telemetry() {
     while (1) {
 
@@ -39,8 +29,8 @@ void telemetry() {
         // cout << "INIT overshoot:    " << initOvershoot << "in" << endl;
         // cout << "ESSE overshoot:    " << esseOvershoot << "in" << endl;
 
-        // cout << "Pos [in]:     " << (chassis.get_left_position_in() + chassis.get_right_position_in()) / 2 << std::endl;
-        // cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
+        cout << "Pos [in]:     " << (chassis.getLeftPos() + chassis.getRightPos()) / 2 << std::endl;
+        cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
         // std::cout << "drive:            " << (l.position(deg) + r.position(deg))/2 << std::endl;
         // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
         // std::cout << "Position [deg]:         " << intake.position(deg) << std::endl;
@@ -86,17 +76,17 @@ void autonomous(void) {
     imu.resetRotation();
 
     chassis.setLinExits(1.5, 300, 2000);
-    chassis.setLinPID(12, 1, 0, 7, 0); // 1.2,4.5
-    chassis.setThetaPID(6, 0.4, 0, 1, 0); // kp0.4, kd1
+    chassis.setLin(12, 1, 0, 7, 0); // 1.2,4.5
+    chassis.setAng(6, 0.4, 0, 1, 0); // kp0.4, kd1
 
-    chassis.setAngExits(0.8, 300, 3000);
+    chassis.setTurnExits(0.8, 300, 3000);
 
     // chassis.set_turn_constants(12, 0.37, 0.03, 3.1, 15); // 120-180s
-    chassis.setAngPID(12, 0.37, 0.03, 3.1, 15); // 45-90
+    chassis.setTurn(12, 0.37, 0.03, 3.1, 15); // 45-90
     //chassis.set_turn_constants(12, 0.37, 0.03, 2.9, 5); // smaller than 30
     
     //autoLSAWP();
-    autoLeft();
+    auto_left_4_5();
     //autoRight();
     //autoSKILLS();
 }

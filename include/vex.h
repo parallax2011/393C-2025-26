@@ -31,8 +31,8 @@
 #include "lib/odom.h"
 #include "lib/drive.h"
 #include "lib/util.h"
-#include "lib/PID.h"
-#include "autons.h"
+#include "lib/pid.h"
+#include "auton.h"
 #include "controls.h"
 #include "optical.h"
 #include "constants.h"
@@ -54,10 +54,3 @@ void filter_blue();
 
 #define repeat(iterations)                                                     \
   for (int iterator = 0; iterator < iterations; iterator++)
-
-// extern int settledState;
-
-// extern float initOvershoot;
-// float esseOvershoot;
-
-// extern std::chrono::duration<double> accelTime;
