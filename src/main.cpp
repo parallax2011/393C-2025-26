@@ -29,7 +29,7 @@ void telemetry() {
         // cout << "INIT overshoot:    " << initOvershoot << "in" << endl;
         // cout << "ESSE overshoot:    " << esseOvershoot << "in" << endl;
 
-        cout << "Pos [in]:     " << (chassis.getLeftPos() + chassis.getRightPos()) / 2 << std::endl;
+        cout << "Pos [in]:     " << chassis.getAvgPosition() << std::endl;
         cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
         // std::cout << "drive:            " << (l.position(deg) + r.position(deg))/2 << std::endl;
         // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
@@ -155,7 +155,6 @@ void usercontrol(void) {
     l.setStopping(coast);
     r.setStopping(coast);
 
-
     inf.setMaxTorque(100, percent);
     inb.setMaxTorque(100, percent);
 
@@ -182,7 +181,7 @@ void usercontrol(void) {
         else if (R2 and !L1)                    { scoreLongGoal(); }
         else if (B)                             { hood.set(true); trapdoor.set(false); moveIntake(-12, -12); } // manual sorting
         else if (X)                             { trapdoor.set(true); moveIntake(12, 12); } // antijam
-        else if (A)                             {  }
+        else if (A)                             {  } // placeholder button
         else                                    {  moveIntake(0, 0); }
 
         wait(20, msec);
