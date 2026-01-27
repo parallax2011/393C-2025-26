@@ -1,6 +1,6 @@
 #pragma once
 #include "vex.h"
-#include "lib/drive.h"
+#include "ROBOT.h"
 
 class Drive;
 extern Drive chassis;

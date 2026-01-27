@@ -27,14 +27,14 @@
 #include "v5.h"
 #include "v5_vcs.h"
 
-#include "robot-config.h"
-#include "lib/odom.h"
-#include "lib/drive.h"
-#include "lib/util.h"
-#include "lib/PID.h"
+#include "config.h"
+#include "calc/FPS.h"
+#include "ROBOT.h"
+#include "calc/calc.h"
+#include "calc/PID.h"
 #include "auton.h"
 #include "controls.h"
-#include "optical.h"
+#include "calc/optical.h"
 #include "constants.h"
 
 class Drive;
