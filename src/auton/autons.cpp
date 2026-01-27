@@ -1,6 +1,6 @@
 #pragma once
 #include "vex.h"
-#include "calc/drive.h"
+#include "lib/drive.h"
 
 class Drive;
 extern Drive chassis;
@@ -12,8 +12,8 @@ void autoLSAWP() {
 
     chassis.setLin(12, 1, 0, 7, 0); chassis.setAng(6, 0.4, 0, 1, 0); chassis.arc(-39, -36);
     // chassis.move(-30.5);
-    // chassis.swingRight(28.8, 12, 1, 300, 1000, 1, 0, 5, 0);
-    // std::cout << "After swing:     " << imu.rotation() << " " << chassis.getTheta() - 360 << std::endl;
+    // chassis.right_swing_to_angle(28.8, 12, 1, 300, 1000, 1, 0, 5, 0);
+    // std::cout << "After swing:     " << imu.rotation() << " " << chassis.getAbsTheta() - 360 << std::endl;
     hood.set(true); moveIntake(-6, -12);
     auto taska = []() { wait(300, msec); moveIntake(0, 0); }; thread t_taska = thread(taska);
 
@@ -30,31 +30,40 @@ void auto_left_4_5() {
     chassis.move(33, 4, 3, 80, 2000); // chained; moves ~31.5 consistently
     
     // get 2 blocks under goal
-    chassis.arc(21.65, -49.8, 3, 7, 3000);
+    chassis.arc(22.5, -49.8, 3, 7, 3000); //21.65 dist
     
     // score 4 blocks on mid goal
-    // auto task0 = []() { wait(500, msec); scoreMidGoal(); }; thread t_task0 = thread(task0);
-    // chassis.move(-30);
+    auto task0 = []() { 
+        wait(350, msec); trapdoor.set(true); moveIntake(-12, 12); wait(300, msec); moveIntake(-12, 6);}; thread t_task0 = thread(task0);
+    chassis.arc(-31, -124.8, 12, 6.8, 1700); wait(1200, msec);
+    moveIntake(0, 0);
 
-    chassis.arc(-33, -124.8, 1.2, 6.8, 1700); wait(1200, msec);
-    // moveIntake(0, 0);
+    // get 3 blocks in match loader
+    chassis.move(48, 12, 3, 80, 2000); // chassis.move(48, -123.3, 12, 6, 3000);
+    chassis.turn(-170.5, 12, 3, 100, 2000);
+    scraper.set(true); intake(); wait(500, msec);
+    chassis.move(12, 6); wait(400, msec);
 
-    // // get 3 blocks in match loader
-    // chassis.move(49, 12, 3, 80, 2000); // chassis.move(48, -123.3, 12, 6, 3000);
-    // chassis.turn(-176);
+    // score 4 blocks on long goal
+    auto task1 = []() { 
+        hood.set(true); wait(1000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task1 = thread(task1);
+    chassis.move(-28, 8);
+    scraper.set(false);
 
-
-        // chassis.arc(55.3, -70, 4, 0.3, 4000);
-    // wait(500, msec);
-    // chassis.arc(-38, -134, 4, 1.5, 4000);
-    // scoreMidGoal();
+    // push blocks in control zone
+    chassis.set_heading(0);
+    chassis.arc(19.4, -90, 6, 10, 3000); moveIntake(0, 0);
+    chassis.arc(-22, 0, 5, 7.5, 3000);
+    wait(100, msec);
+    descorer.set(false);
+    chassis.drive_stop(brake);
 
 }
 
 // void autoLeft() {
 //     std::cout << "-----------------------------------------" << std::endl;
 //     chassis.move(33);//33
-//     chassis.turn_timeout = 2000; chassis.turn(-88.5); std::cout << "Angle: " << imu.rotation() << endl; //kTurn(95, 12, .33, .035, 3.1, 15);
+//     chassis.ang_timeout = 2000; chassis.turn(-88.5); std::cout << "Angle: " << imu.rotation() << endl; //kTurn(95, 12, .33, .035, 3.1, 15);
 //     auto taskA = []() {scraper.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA); wait(800, msec);
 //     chassis.move(7.5, 5, 700);
 //     wait(100, msec);
@@ -83,7 +92,7 @@ void auto_left_4_5() {
 //     // match loader
 //     std::cout << "-----------------------------------------" << std::endl;
 //     chassis.move(33);//33
-//     chassis.turn_timeout = 2000; chassis.turn(88.5); std::cout << "Angle: " << imu.rotation() << endl; //kTurn(95, 12, .33, .035, 3.1, 15);
+//     chassis.ang_timeout = 2000; chassis.turn(88.5); std::cout << "Angle: " << imu.rotation() << endl; //kTurn(95, 12, .33, .035, 3.1, 15);
 //     auto taskA = []() {scraper.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA); wait(300, msec);
 //     chassis.move(6, 6, 700);
     

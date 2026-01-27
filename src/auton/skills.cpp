@@ -1,6 +1,6 @@
 #pragma once
 #include "vex.h"
-#include "calc/drive.h"
+#include "lib/drive.h"
 
 class Drive;
 extern Drive chassis;
@@ -11,20 +11,20 @@ void autoSKILLS() {
 
     // match loader 1
     std::cout << "-----------------------------------------" << std::endl;
-    chassis.move(33); std::cout << chassis.getAvgPosition() << std::endl;
+    chassis.move(33); std::cout << (chassis.getLeftPos() + chassis.getRightPos()) / 2 << std::endl;
     chassis.kTurn(-88.5, 12, .33, .035, 3.1, 15);
-    std::cout << std::endl << "After turn:       " << imu.rotation() << " " << chassis.getTheta() - 360 << std::endl;
+    std::cout << std::endl << "After turn:       " << imu.rotation() << " " << chassis.getAbsTheta() - 360 << std::endl;
     auto task0 = []() {scraper.set(true); intake();}; thread t_task0 = thread(task0);
     wait(600, msec);
     chassis.lin_timeout = 2000; chassis.lin_max = 6; chassis.arc(7.5, -87.8);
     wait(1500, msec);
-    std::cout << "After loading:    " << imu.rotation() << " " << chassis.getTheta() - 360 << std::endl;
+    std::cout << "After loading:    " << imu.rotation() << " " << chassis.getAbsTheta() - 360 << std::endl;
 
     // first scoring on long goal 1
     chassis.move(-10); 
     scraper.set(false);
     wait(200, msec);
-    chassis.turn(0); std::cout << imu.rotation() << " " << chassis.getTheta() - 360 << std::endl;
+    chassis.turn(0); std::cout << imu.rotation() << " " << chassis.getAbsTheta() - 360 << std::endl;
 
     // arc code
     chassis.setLin(12, 1, 0, 7, 0); chassis.setAng(10.5, 0.4, 0, 1, 0);
@@ -71,7 +71,7 @@ void autoSKILLS() {
     chassis.move(-10); 
     scraper.set(false);
     wait(200, msec);
-    chassis.turn(90); std::cout << imu.rotation() << " " << chassis.getTheta() - 360 << std::endl;
+    chassis.turn(90); std::cout << imu.rotation() << " " << chassis.getAbsTheta() - 360 << std::endl;
 
     // arc code
     chassis.setLin(12, 1, 0, 7, 0); chassis.setAng(10.5, 0.4, 0, 1, 0);

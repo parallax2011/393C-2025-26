@@ -7,13 +7,13 @@
  * The sideways tracker center distance is the vertical distance from the 
  * center of the robot to the center of the sideways wheel being measured.
  * If there's really no sideways wheel we set the center distance to 0 and
- * pretend the wheel never spins, which is equivalent to a no-drift drive.
+ * pretend the wheel never spins, which is equivalent to a no-drift robot.
  * 
  * @param ForwardTracker_center_distance A horizontal distance to the wheel center in inches.
  * @param SidewaysTracker_center_distance A vertical distance to the wheel center in inches.
  */
 
-void Odom::setPhysicalDistances(float ForwardTracker_center_distance, float SidewaysTracker_center_distance){
+void Odom::set_physical_distances(float ForwardTracker_center_distance, float SidewaysTracker_center_distance){
     this->ForwardTracker_center_distance = ForwardTracker_center_distance;
     this->SidewaysTracker_center_distance = SidewaysTracker_center_distance;
 }
@@ -24,14 +24,14 @@ void Odom::setPhysicalDistances(float ForwardTracker_center_distance, float Side
  * is in the positive Y direction. Orientation can be provided with 
  * some flexibility, including less than 0 and greater than 360.
  * 
- * @param X_position Field-centric x position of the drive.
- * @param Y_position Field-centric y position of the drive.
+ * @param X_position Field-centric x position of the robot.
+ * @param Y_position Field-centric y position of the robot.
  * @param orientation_deg Field-centered, clockwise-positive, orientation.
  * @param ForwardTracker_position Current position of the sensor in inches.
  * @param SidewaysTracker_position Current position of the sensor in inches.
  */
 
-void Odom::setPosition(float X_position, float Y_position, float orientation_deg, float ForwardTracker_position, float SidewaysTracker_position){
+void Odom::set_position(float X_position, float Y_position, float orientation_deg, float ForwardTracker_position, float SidewaysTracker_position){
     this->ForwardTracker_position = ForwardTracker_position;
     this->SideWaysTracker_position = SidewaysTracker_position;
     this->X_position = X_position;
@@ -51,14 +51,14 @@ void Odom::setPosition(float X_position, float Y_position, float orientation_deg
  * @param orientation_deg Field-centered, clockwise-positive, orientation.
  */
 
-void Odom::updatePosition(float ForwardTracker_position, float SidewaysTracker_position, float orientation_deg){
+void Odom::update_position(float ForwardTracker_position, float SidewaysTracker_position, float orientation_deg){
     // this-> always refers to the old version of the variable, so subtracting this->x from x gives delta x.
     float Forward_delta = ForwardTracker_position-this->ForwardTracker_position;
     float Sideways_delta = SidewaysTracker_position-this->SideWaysTracker_position;
     this->ForwardTracker_position=ForwardTracker_position;
     this->SideWaysTracker_position=SidewaysTracker_position;
-    float orientation_rad = toRad(orientation_deg);
-    float prev_orientation_rad = toRad(this->orientation_deg);
+    float orientation_rad = to_rad(orientation_deg);
+    float prev_orientation_rad = to_rad(this->orientation_deg);
     float orientation_delta_rad = orientation_rad-prev_orientation_rad;
     this->orientation_deg=orientation_deg;
 

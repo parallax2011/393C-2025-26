@@ -6,7 +6,7 @@
  * 
  * @param error Difference in desired and current position.
  * @param kp Proportional constant.
- * @param ki accumulated_error constant.
+ * @param ki Integral constant.
  * @param kd Derivative constant.
  * @param starti Maximum error to start integrating.
  */
@@ -29,7 +29,7 @@ pid::pid(float error, float kp, float ki, float kd, float starti) :
  * 
  * @param error Difference in desired and current position.
  * @param kp Proportional constant.
- * @param ki accumulated_error constant.
+ * @param ki Integral constant.
  * @param kd Derivative constant.
  * @param starti Maximum error to start integrating.
  * @param settle_error Maximum error to be considered settled.
@@ -56,7 +56,7 @@ pid::pid(float error, float kp, float ki, float kd, float starti,
  * 
  * @param error Difference in desired and current position.
  * @param kp Proportional constant.
- * @param ki accumulated_error constant.
+ * @param ki Integral constant.
  * @param kd Derivative constant.
  * @param starti Maximum error to start integrating.
  * @param settle_error Maximum error to be considered settled.
@@ -78,26 +78,37 @@ pid::pid(float error, float kp, float ki, float kd, float starti,
     update_period(update_period)
 {};
 
+/**
+ * calcs the output power based on the error.
+ * Typical PID calculation with some optimizations: When the robot crosses
+ * error=0, the i-term gets reset to 0. And, of course, the robot only
+ * accumulates i-term when error is less than starti. Read about these at
+ * https://georgegillard.com/resources/documents.
+ * 
+ * @param error Difference in desired and current position.
+ * @return Output power.
+ */
 
-float pid::compute(float error) {
-    
+float pid::calc(float error) {
     if (fabs(error) < starti) {
         accumulated_error += error;
     }
-
-    if ((error > 0 && prevError < 0) || (error < 0 && prevError > 0)) { 
+    // Checks if the error has crossed 0, and if it has, it eliminates the integral term.
+    if ((error > 0 && previous_error < 0) || (error < 0 && previous_error > 0)) { 
         accumulated_error = 0; 
     }
 
-    output = kp * error + ki * accumulated_error + kd * (error - prevError);
-    prevError = error;
+    output = kp * error + ki * accumulated_error + kd * (error - previous_error);
+
+    previous_error = error;
 
     if (fabs(error) < settle_error) {
-        timeSpentSettled += 10;
+        time_spent_settled += 10;
     } else {
-        timeSpentSettled = 0;
+        time_spent_settled = 0;
     }
-    timeSpentRunning += 10;
+
+    time_spent_running += 10;
 
     return output;
 }
@@ -111,12 +122,12 @@ float pid::compute(float error) {
  * @return Whether the movement is settled.
  */
 
-bool pid::isSettled() {
-    if (timeSpentRunning > timeout && timeout != 0) {
+bool pid::is_settled() {
+    if (time_spent_running > timeout && timeout != 0) {
         return(true);
     } // If timeout does equal 0, the move will never actually time out. Setting timeout to 0 is the 
         // equivalent of setting it to infinity.
-    if (timeSpentSettled > settle_time){
+    if (time_spent_settled > settle_time){
         return(true);
     }
     return(false);
