@@ -1,16 +1,5 @@
 #include "vex.h"
 
-/**
- * PID constructor with P, I, D, and starti.
- * Starti keeps the I term at 0 until error is less than starti.
- * 
- * @param error Difference in desired and current position.
- * @param kp Proportional constant.
- * @param ki Integral constant.
- * @param kd Derivative constant.
- * @param starti Maximum error to start integrating.
- */
-
 pid::pid(float error, float kp, float ki, float kd, float starti) :
     error(error),
     kp(kp),
@@ -18,24 +7,6 @@ pid::pid(float error, float kp, float ki, float kd, float starti) :
     kd(kd),
     starti(starti)
 {};
-
-/**
- * PID constructor with settling inputs.
- * The settling system works like this: The robot is settled
- * when error is less than settle_error for a duration of settle_time,
- * or if the function has gone on for longer than timeout. Otherwise
- * it is not settled. Starti keeps the I term at 0 until error is less 
- * than starti.
- * 
- * @param error Difference in desired and current position.
- * @param kp Proportional constant.
- * @param ki Integral constant.
- * @param kd Derivative constant.
- * @param starti Maximum error to start integrating.
- * @param settle_error Maximum error to be considered settled.
- * @param settle_time Minimum time to be considered settled.
- * @param timeout Time after which to give up and move on.
- */
 
 pid::pid(float error, float kp, float ki, float kd, float starti, 
          float settle_error, float settle_time, float timeout):
@@ -49,22 +20,6 @@ pid::pid(float error, float kp, float ki, float kd, float starti,
     timeout(timeout)
 {};
 
-/**
- * PID constructor with custom update period.
- * The default update period is 10ms, but if you want to run
- * a faster or slower loop, you need to let the settler know.
- * 
- * @param error Difference in desired and current position.
- * @param kp Proportional constant.
- * @param ki Integral constant.
- * @param kd Derivative constant.
- * @param starti Maximum error to start integrating.
- * @param settle_error Maximum error to be considered settled.
- * @param settle_time Minimum time to be considered settled.
- * @param timeout Time after which to give up and move on.
- * @param update_period Loop delay time in ms.
- */
-
 pid::pid(float error, float kp, float ki, float kd, float starti, 
          float settle_error, float settle_time, float timeout, float update_period):
     error(error),
@@ -77,17 +32,6 @@ pid::pid(float error, float kp, float ki, float kd, float starti,
     timeout(timeout),
     update_period(update_period)
 {};
-
-/**
- * calcs the output power based on the error.
- * Typical PID calculation with some optimizations: When the robot crosses
- * error=0, the i-term gets reset to 0. And, of course, the robot only
- * accumulates i-term when error is less than starti. Read about these at
- * https://georgegillard.com/resources/documents.
- * 
- * @param error Difference in desired and current position.
- * @return Output power.
- */
 
 float pid::calc(float error) {
     if (fabs(error) < starti) {
@@ -112,15 +56,6 @@ float pid::calc(float error) {
 
     return output;
 }
-
-/**
- * calcs whether or not the movement has settled.
- * The robot is considered settled when error is less than settle_error 
- * for a duration of settle_time, or if the function has gone on for 
- * longer than timeout. Otherwise it is not settled.
- * 
- * @return Whether the movement is settled.
- */
 
 bool pid::is_settled() {
     if (time_spent_running > timeout && timeout != 0) {

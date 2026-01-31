@@ -125,10 +125,10 @@ public:
   void drive_distance(float distance, float heading, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout);
   void drive_distance(float distance, float heading, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti);
 
-  void left_swing_to_angle(float angle);
-  void left_swing_to_angle(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
-  void right_swing_to_angle(float angle);
-  void right_swing_to_angle(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+  void leftSwing(float angle);
+  void leftSwing(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+  void rightSwing(float angle);
+  void rightSwing(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
   //void lift_to_position(float position, float lift_max_voltage, float lift_settle_error, float lift_settle_time, float lift_timeout, float lift_kp, float lift_ki, float lift_kd, float lift_starti);
 
   void swing(int direction, float angle);

@@ -58,12 +58,12 @@ int SidewaysTracker_port, float SidewaysTracker_diameter, float SidewaysTracker_
   E_SidewaysTracker(ThreeWire.Port[to_port(SidewaysTracker_port)])
 {
     if (drive_setup == TANK_ONE_FORWARD_ENCODER || drive_setup == TANK_ONE_FORWARD_ROTATION || drive_setup == ZERO_TRACKER_ODOM){
-      odom.set_physical_distances(ForwardTracker_center_distance, 0);
+      odom.setPhysicalDistances(ForwardTracker_center_distance, 0);
     } 
     if (drive_setup == TANK_ONE_SIDEWAYS_ENCODER || drive_setup == TANK_ONE_SIDEWAYS_ROTATION || 
     drive_setup == TANK_TWO_ENCODER || drive_setup == TANK_TWO_ROTATION ||
     drive_setup == HOLONOMIC_TWO_ENCODER || drive_setup == HOLONOMIC_TWO_ROTATION){
-      odom.set_physical_distances(ForwardTracker_center_distance, SidewaysTracker_center_distance);
+      odom.setPhysicalDistances(ForwardTracker_center_distance, SidewaysTracker_center_distance);
     }
 }
 
@@ -206,7 +206,7 @@ void Drive::turn_to_angle(float angle, float turn_max, float ang_settle_error, f
 void Drive::turn_to_angle(float angle, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float turn_kp, float ang_ki, float ang_kd, float ang_starti){
   pid pid_turn(reduce_negative_180_to_180(angle - getAbsTheta()), turn_kp, ang_ki, ang_kd, ang_starti, ang_settle_error, ang_settle_time, ang_timeout);
   while( !pid_turn.is_settled() ){
-    float absHeading = getAbsTheta();
+    // float absHeading = getAbsTheta();
     float error = reduce_negative_180_to_180(angle - getAbsTheta());
     float output = pid_turn.calc(error);
     output = clamp(output, -turn_max, turn_max);
@@ -282,7 +282,7 @@ void Drive::drive_distance(float distance, float heading, float lin_max, float t
   float avgPosition = startAvgPosition;
 
   while(pid_lin.is_settled() == false){
-    float absHeading = getAbsTheta();
+    // float absHeading = getAbsTheta();
 
     avgPosition = (getLeftPos()+getRightPos())/2.0;
     float lin_error = distance + startAvgPosition - avgPosition;
@@ -320,14 +320,14 @@ void Drive::drive_distance(float distance, float heading, float lin_max, float t
  * @param angle Desired angle in degrees.
  */
 
-void Drive::left_swing_to_angle(float angle){
-  left_swing_to_angle(angle, swing_max, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
+void Drive::leftSwing(float angle){
+  leftSwing(angle, swing_max, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
 }
 
-void Drive::left_swing_to_angle(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
+void Drive::leftSwing(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
   pid swingPID(reduce_negative_180_to_180(angle - getAbsTheta()), swing_kp, swing_ki, swing_kd, swing_starti, swing_settle_error, swing_settle_time, swing_timeout);
   while(swingPID.is_settled() == false){
-    float absHeading = getAbsTheta();
+    // float absHeading = getAbsTheta();
     float error = reduce_negative_180_to_180(angle - getAbsTheta());
     float output = swingPID.calc(error);
     output = clamp(output, -turn_max, turn_max);
@@ -338,14 +338,14 @@ void Drive::left_swing_to_angle(float angle, float swing_max, float swing_settle
   }
 }
 
-void Drive::right_swing_to_angle(float angle){
-  right_swing_to_angle(angle, swing_max, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
+void Drive::rightSwing(float angle){
+  rightSwing(angle, swing_max, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
 }
 
-void Drive::right_swing_to_angle(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
+void Drive::rightSwing(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
   pid swingPID(reduce_negative_180_to_180(angle - getAbsTheta()), swing_kp, swing_ki, swing_kd, swing_starti, swing_settle_error, swing_settle_time, swing_timeout);
   while(swingPID.is_settled() == false){
-    float absHeading = getAbsTheta();
+    // float absHeading = getAbsTheta();
     float error = reduce_negative_180_to_180(angle - getAbsTheta());
     float output = swingPID.calc(error);
     output = clamp(output, -turn_max, turn_max);
@@ -358,9 +358,9 @@ void Drive::right_swing_to_angle(float angle, float swing_max, float swing_settl
 
 void Drive::swing(int direction, float angle) {
   if (direction == LEFT) {
-    left_swing_to_angle(angle);
+    leftSwing(angle);
   } else if (direction == RIGHT) {
-    right_swing_to_angle(angle);
+    rightSwing(angle);
   }
 }
 
@@ -403,7 +403,7 @@ float Drive::get_SidewaysTracker_position(){
 
 void Drive::position_track(){
   while(1){
-    odom.update_position(get_ForwardTracker_position(), get_SidewaysTracker_position(), getAbsTheta());
+    odom.updatePosition(get_ForwardTracker_position(), get_SidewaysTracker_position(), getAbsTheta());
     task::sleep(5);
   }
 }
@@ -432,7 +432,7 @@ void Drive::set_heading(float orientation_deg){
  */
 
 void Drive::set_coordinates(float X_position, float Y_position, float orientation_deg){
-  odom.set_position(X_position, Y_position, orientation_deg, get_ForwardTracker_position(), get_SidewaysTracker_position());
+  odom.setPosition(X_position, Y_position, orientation_deg, get_ForwardTracker_position(), get_SidewaysTracker_position());
   set_heading(orientation_deg);
   odom_task = task(position_track_task);
 }

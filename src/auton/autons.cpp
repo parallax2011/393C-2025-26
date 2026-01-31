@@ -12,10 +12,72 @@ void autoLSAWP() {
 
     chassis.setLin(12, 1, 0, 7, 0); chassis.setAng(6, 0.4, 0, 1, 0); chassis.arc(-39, -36);
     // chassis.move(-30.5);
-    // chassis.right_swing_to_angle(28.8, 12, 1, 300, 1000, 1, 0, 5, 0);
+    // chassis.rightSwing(28.8, 12, 1, 300, 1000, 1, 0, 5, 0);
     // std::cout << "After swing:     " << imu.rotation() << " " << chassis.getAbsTheta() - 360 << std::endl;
     hood.set(true); moveIntake(-6, -12);
     auto taska = []() { wait(300, msec); moveIntake(0, 0); }; thread t_taska = thread(taska);
+
+}
+
+void autoRight() {
+    chassis.move(33.6);
+    chassis.turn(88.5);
+    auto task0 = []() {scraper.set(true); intake();}; thread t_task0 = thread(task0);
+    wait(600, msec);
+    chassis.lin_timeout = 2000; chassis.lin_max = 6; chassis.arc(7, 88.5);
+    wait(600, msec);
+
+    auto task5 = []() { hood.set(true); wait(2000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task5 = thread(task5);
+    chassis.arc(-29, 91); wait(2000, msec);
+
+    chassis.set_heading(0);
+    chassis.arc(18, 90, 6, 10, 3000); moveIntake(0, 0);
+    l.setStopping(brake); r.setStopping(brake);
+    chassis.turn(180);
+    scraper.set(false);
+    chassis.move(27, 4);
+    wait(100, msec);
+    descorer.set(false);
+    chassis.drive_stop(brake);
+
+}
+
+void autoLeft_4_5() {
+    // settings
+    std::cout << "-----------------------------------------" << std::endl;
+    chassis.set_heading(-19); imu.setHeading(341, deg); imu.setRotation(-19, deg);
+
+    // get first 3 blocks
+    intake();
+    chassis.move(36, 4, 3, 80, 2000); // chained
+    wait(500, msec);
+
+    // score 3 blocks
+    auto task0 = []() { 
+        wait(400, msec); trapdoor.set(true); wait(400, msec); moveIntake(-12, 12); }; thread t_task0 = thread(task0);
+    chassis.arc(-16.3, -127.7, 3, 7.5, 3000); wait(400, msec);
+
+    // get 3 blocks in match loader
+    chassis.move(50, 12, 3, 80, 2000); // chassis.move(48, -123.3, 12, 6, 3000);
+    chassis.turn(-170.5, 12, 2, 160, 2000);
+    scraper.set(true); intake(); wait(400, msec);
+    chassis.arc(9, -170.5, 6, 6, 2000); wait(400, msec);
+
+    // score 4 blocks on long goal
+    auto task1 = []() { 
+        hood.set(true); wait(1000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task1 = thread(task1);
+    chassis.move(-30, 8);
+    scraper.set(false);
+    wait(1200, msec);
+
+    // push blocks in control zone
+    chassis.set_heading(0);
+    chassis.arc(19.4, -90, 6, 10, 3000); moveIntake(0, 0);
+    l.setStopping(brake); r.setStopping(brake);
+    chassis.arc(-27, 0, 5, 7.5, 3000);
+    wait(100, msec);
+    descorer.set(false);
+    chassis.drive_stop(brake);
 
 }
 
@@ -31,33 +93,35 @@ void auto_left_4_5() {
     
     // get 2 blocks under goal
     chassis.arc(22.5, -49.8, 3, 7, 3000); //21.65 dist
+    trapdoor.set(true);
     
     // score 4 blocks on mid goal
     auto task0 = []() { 
-        wait(350, msec); trapdoor.set(true); moveIntake(-12, 12); wait(300, msec); moveIntake(-12, 6);}; thread t_task0 = thread(task0);
-    chassis.arc(-31, -124.8, 12, 6.8, 1700); wait(1200, msec);
-    moveIntake(0, 0);
+        wait(650, msec); moveIntake(-10, -10); wait(150, msec); hood.set(true); }; thread t_task0 = thread(task0);
+    chassis.theta_kd = 1.8, chassis.arc(-29.5, -124.8, 12, 6.9, 1600); wait(600, msec); //29.5
 
     // get 3 blocks in match loader
-    chassis.move(48, 12, 3, 80, 2000); // chassis.move(48, -123.3, 12, 6, 3000);
-    chassis.turn(-170.5, 12, 3, 100, 2000);
-    scraper.set(true); intake(); wait(500, msec);
-    chassis.move(12, 6); wait(400, msec);
+    moveIntake(0, 0);
+    chassis.move(49.4, 12, 1.5, 300, 2000); // prev dist = 48, 47.75 chassis.move(48, -123.3, 12, 6, 3000);
+    chassis.turn(-170.5, 12, 0.8, 300, 2000);
+    scraper.set(true); intake(); wait(400, msec);
+    chassis.arc(12.5, -170.5, 6, 6, 2000); wait(400, msec); //12
 
     // score 4 blocks on long goal
     auto task1 = []() { 
-        hood.set(true); wait(1000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task1 = thread(task1);
+        wait(400, msec); hood.set(true); wait(500, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task1 = thread(task1);
     chassis.move(-28, 8);
     scraper.set(false);
+    wait(1350, msec);
 
     // push blocks in control zone
     chassis.set_heading(0);
     chassis.arc(19.4, -90, 6, 10, 3000); moveIntake(0, 0);
-    chassis.arc(-22, 0, 5, 7.5, 3000);
+    l.setStopping(brake); r.setStopping(brake);
+    chassis.arc(-27, 0, 5, 7.5, 3000);
     wait(100, msec);
     descorer.set(false);
     chassis.drive_stop(brake);
-
 }
 
 // void autoLeft() {

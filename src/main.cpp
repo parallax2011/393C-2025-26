@@ -88,7 +88,7 @@ void autonomous(void) {
     //autoLSAWP();
     auto_left_4_5();
     //autoRight();
-    //autoSKILLS();
+    // autoSKILLS();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -143,55 +143,9 @@ void get_block(std::string targetColor) {
         }
     }
 }
-bool STATE = false;
 
 void filter_blue() { get_block("blue"); }
 void filter_red() { get_block("red"); }
-
-bool driverControl = false;
-
-void usercontrol(void) {
-
-    l.setStopping(coast);
-    r.setStopping(coast);
-
-
-    inf.setMaxTorque(100, percent);
-    inb.setMaxTorque(100, percent);
-
-    optic.setLight(ledState::on);
-    optic.setLightPower(100);
-    optic.objectDetectThreshold(50);
-
-    thread tColorSortAlg1 = thread(filterRed);
-
-    bool R1; bool R2; bool L1; bool L2; bool B; bool X; bool A;
-
-    while (1) {
-
-        R1 = controller1.ButtonR1.pressing(); R2 = controller1.ButtonR2.pressing();
-        L1 = controller1.ButtonL1.pressing(); L2 = controller1.ButtonL2.pressing(); 
-        B = controller1.ButtonB.pressing(); X = controller1.ButtonX.pressing(); A = controller1.ButtonA.pressing();
-
-        arcadeControl(); // chassis
-
-        // intake
-        if (R1 and L1)                          { scoreLowGoal(); }
-        else if (R1 and !L1 and enableIntake)   { intake(); }
-        else if (R2 and L1)                     { scoreMidGoal(); }
-        else if (R2 and !L1)                    { scoreLongGoal(); }
-        else if (B)                             { hood.set(true); trapdoor.set(false); moveIntake(-12, -12); } // manual sorting
-        else if (X)                             { trapdoor.set(true); moveIntake(12, 12); } // antijam
-        else if (A)                             {  }
-        else                                    {  moveIntake(0, 0); }
-
-        wait(20, msec);
-    }
-}
-
-//
-// Main will set up the competition functions and callbacks.
-//
 
 int main() {
     // Set up callbacks for autonomous and driver control periods.
@@ -200,7 +154,6 @@ int main() {
 
     controller1.ButtonY.pressed(ctrlScraper);
     controller1.ButtonL2.pressed(ctrlDescorer);
-    // controller1.ButtonDown.pressed(ctrlKillSwitch);
 
     // Run the pre-autonomous function.
     pre_auton();

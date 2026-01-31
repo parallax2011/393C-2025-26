@@ -4,7 +4,7 @@ void ctrlScraper();
 void ctrlDescorer();
 void ctrlKillSwitch();
 
-void arcadeControl();
+void arcade();
 void moveIntake(int inlv, int inuv);
 
 void intake();
@@ -12,3 +12,6 @@ void scoreLowGoal();
 void scoreMidGoal();
 void scoreLongGoal();
 void antiJam();
+
+void ctrls();
+void usercontrol(void);
