@@ -92,31 +92,31 @@ void auto_left_4_5() {
     chassis.move(33, 4, 3, 80, 2000); // chained; moves ~31.5 consistently
     
     // get 2 blocks under goal
-    chassis.arc(22.5, -49.8, 3, 7, 3000); //21.65 dist
+    chassis.arc(22.5, -49.8, 3, 7, 2400); //21.65 dist
     trapdoor.set(true);
     
     // score 4 blocks on mid goal
     auto task0 = []() { 
-        wait(650, msec); moveIntake(-10, -10); wait(150, msec); hood.set(true); }; thread t_task0 = thread(task0);
-    chassis.theta_kd = 1.8, chassis.arc(-29.5, -124.8, 12, 6.9, 1600); wait(600, msec); //29.5
+        wait(650, msec); moveIntake(-8, -8); wait(150, msec); hood.set(true); }; thread t_task0 = thread(task0);
+    chassis.theta_kd = 1.8, chassis.arc(-29.5, -124.8, 12, 6.4, 1600); wait(600, msec); //29.5
 
     // get 3 blocks in match loader
     moveIntake(0, 0);
-    chassis.move(49.4, 12, 1.5, 300, 2000); // prev dist = 48, 47.75 chassis.move(48, -123.3, 12, 6, 3000);
+    chassis.move(50.2, 12, 1.5, 300, 2000); // prev dist = 48, 47.75 chassis.move(48, -123.3, 12, 6, 3000);
     chassis.turn(-170.5, 12, 0.8, 300, 2000);
     scraper.set(true); intake(); wait(400, msec);
-    chassis.arc(12.5, -170.5, 6, 6, 2000); wait(400, msec); //12
+    chassis.arc(13, -170.5, 6, 6, 1200); //wait(400, msec); //12
 
     // score 4 blocks on long goal
     auto task1 = []() { 
-        wait(400, msec); hood.set(true); wait(500, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task1 = thread(task1);
+        wait(400, msec); hood.set(true); wait(400, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task1 = thread(task1);
     chassis.move(-28, 8);
     scraper.set(false);
     wait(1350, msec);
 
     // push blocks in control zone
     chassis.set_heading(0);
-    chassis.arc(19.4, -90, 6, 10, 3000); moveIntake(0, 0);
+    chassis.arc(20.4, -90, 6, 10, 3000); moveIntake(0, 0); //DIST=19.4
     l.setStopping(brake); r.setStopping(brake);
     chassis.arc(-27, 0, 5, 7.5, 3000);
     wait(100, msec);

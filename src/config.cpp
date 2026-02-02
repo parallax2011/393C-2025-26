@@ -41,7 +41,7 @@ controller controller1;
 #define PORT_RF PORT20 //13
 #define PORT_RM PORT19 //12
 #define PORT_RB PORT18 //11
-#define PORT_INTAKE_FRONT PORT1
+#define PORT_INTAKE_FRONT PORT5 //port6
 #define PORT_INTAKE_BACK PORT9
 
 #define PORT_IMU PORT6

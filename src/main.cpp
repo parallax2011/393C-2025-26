@@ -88,7 +88,7 @@ void autonomous(void) {
     //autoLSAWP();
     auto_left_4_5();
     //autoRight();
-    // autoSKILLS();
+    //autoSKILLS();
 }
 
 /*---------------------------------------------------------------------------*/
