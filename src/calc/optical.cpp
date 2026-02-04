@@ -1,5 +1,7 @@
 #include "vex.h"
 
+void filter_block() {}
+
 void getBlock(std::string targetColor) {
     // initialization
     optic.integrationTime(5);

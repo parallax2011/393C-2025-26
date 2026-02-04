@@ -72,42 +72,42 @@ void Drive::spinVolts(float lVel, float rVel){
   DriveR.spin(fwd, rVel, volt);
 }
 
-void Drive::setTurn(float turn_max, float turn_kp, float ang_ki, float ang_kd, float ang_starti){
+void Drive::setTurn(float turn_max, float turn_kp, float turn_ki, float turn_kd, float turn_ksi){
   this->turn_max = turn_max;
   this->turn_kp = turn_kp;
-  this->ang_ki = ang_ki;
-  this->ang_kd = ang_kd;
-  this->ang_starti = ang_starti;
+  this->turn_ki = turn_ki;
+  this->turn_kd = turn_kd;
+  this->turn_ksi = turn_ksi;
 } 
 
-void Drive::setLin(float lin_max, float lin_kp, float lin_ki, float lin_kd, float lin_starti){
+void Drive::setLin(float lin_max, float lin_kp, float lin_ki, float lin_kd, float lin_ksi){
   this->lin_max = lin_max;
   this->lin_kp = lin_kp;
   this->lin_ki = lin_ki;
   this->lin_kd = lin_kd;
-  this->lin_starti = lin_starti;
+  this->lin_ksi = lin_ksi;
 } 
 
-void Drive::setAng(float theta_max, float theta_kp, float theta_ki, float theta_kd, float theta_starti){
-  this->theta_max = theta_max;
-  this->theta_kp = theta_kp;
-  this->theta_ki = theta_ki;
-  this->theta_kd = theta_kd;
-  this->theta_starti = theta_starti;
+void Drive::setAng(float ang_max, float ang_kp, float ang_ki, float ang_kd, float ang_ksi){
+  this->ang_max = ang_max;
+  this->ang_kp = ang_kp;
+  this->ang_ki = ang_ki;
+  this->ang_kd = ang_kd;
+  this->ang_ksi = ang_ksi;
 }
 
-void Drive::setSwing(float swing_max, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
+void Drive::setSwing(float swing_max, float swing_kp, float swing_ki, float swing_kd, float swing_ksi){
   this->swing_max = swing_max;
   this->swing_kp = swing_kp;
   this->swing_ki = swing_ki;
   this->swing_kd = swing_kd;
-  this->swing_starti = swing_starti;
+  this->swing_ksi = swing_ksi;
 } 
 
-void Drive::setTurnExits(float ang_settle_error, float ang_settle_time, float ang_timeout){
-  this->ang_settle_error = ang_settle_error;
-  this->ang_settle_time = ang_settle_time;
-  this->ang_timeout = ang_timeout;
+void Drive::setTurnExits(float turn_settle_error, float turn_settle_time, float turn_timeout){
+  this->turn_settle_error = turn_settle_error;
+  this->turn_settle_time = turn_settle_time;
+  this->turn_timeout = turn_timeout;
 }
 
 void Drive::setLinExits(float lin_settle_error, float lin_settle_time, float lin_timeout){
@@ -173,38 +173,38 @@ void Drive::drive_stop(vex::brakeType mode){
 
 void Drive::turn(float angle){
   // if (angle <= 60) {
-  //   chassis.ang_kd = 2.8;
+  //   chassis.turn_kd = 2.8;
   // } else if (angle <= 120) {
-  //   chassis.ang_kd = 3.2;
+  //   chassis.turn_kd = 3.2;
   // } else if (angle <= 180) {
-  //   chassis.ang_kd = 3.8;
+  //   chassis.turn_kd = 3.8;
   // }
-  turn_to_angle(angle, turn_max, ang_settle_error, ang_settle_time, ang_timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+  turn_to_angle(angle, turn_max, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }
 
 // void Drive::turn(float angle, float turn_max){
-//   turn_to_angle(angle, turn_max, ang_settle_error, ang_settle_time, ang_timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+//   turn_to_angle(angle, turn_max, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 // }
 
 void Drive::turn(float angle, float max) {
-  turn_to_angle(angle, max, ang_settle_error, ang_settle_time, ang_timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+  turn_to_angle(angle, max, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }
 
 void Drive::turn(float angle, float max, float timeout) {
-  turn_to_angle(angle, max, ang_settle_error, ang_settle_time, timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+  turn_to_angle(angle, max, turn_settle_error, turn_settle_time, timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }
 
 void Drive::turn(float angle, float max, float settleError, float settleTime, float timeout) {
-  turn_to_angle(angle, max, settleError, settleTime, timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+  turn_to_angle(angle, max, settleError, settleTime, timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }
                                                           
 
-void Drive::turn_to_angle(float angle, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout){
-  turn_to_angle(angle, turn_max, ang_settle_error, ang_settle_time, ang_timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+void Drive::turn_to_angle(float angle, float turn_max, float turn_settle_error, float turn_settle_time, float turn_timeout){
+  turn_to_angle(angle, turn_max, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }
 
-void Drive::turn_to_angle(float angle, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float turn_kp, float ang_ki, float ang_kd, float ang_starti){
-  pid pid_turn(reduce_negative_180_to_180(angle - getAbsTheta()), turn_kp, ang_ki, ang_kd, ang_starti, ang_settle_error, ang_settle_time, ang_timeout);
+void Drive::turn_to_angle(float angle, float turn_max, float turn_settle_error, float turn_settle_time, float turn_timeout, float turn_kp, float turn_ki, float turn_kd, float turn_ksi){
+  pid pid_turn(reduce_negative_180_to_180(angle - getAbsTheta()), turn_kp, turn_ki, turn_kd, turn_ksi, turn_settle_error, turn_settle_time, turn_timeout);
   while( !pid_turn.is_settled() ){
     // float absHeading = getAbsTheta();
     float error = reduce_negative_180_to_180(angle - getAbsTheta());
@@ -217,8 +217,8 @@ void Drive::turn_to_angle(float angle, float turn_max, float ang_settle_error, f
 //   std::cout << "Ang: " << getAbsTheta() << std::endl;
 }
 
-void Drive::kTurn(float angle, float turn_max, float turn_kp, float ang_ki, float ang_kd, float ang_starti) {
-  turn_to_angle(angle, turn_max, ang_settle_error, ang_settle_time, ang_timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+void Drive::kTurn(float angle, float turn_max, float turn_kp, float turn_ki, float turn_kd, float turn_ksi) {
+  turn_to_angle(angle, turn_max, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }     
 
 /**
@@ -234,50 +234,50 @@ void Drive::kTurn(float angle, float turn_max, float turn_kp, float ang_ki, floa
  */
 
 void Drive::move(float distance){
-  drive_distance(distance, getAbsTheta(), lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_distance(distance, getAbsTheta(), lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 // void Drive::arc(float distance, float heading, const ArcParams& p) {
-//   drive_distance( distance, heading, p.linMax, p.angMax, lin_settle_error, lin_settle_time, p.timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+//   drive_distance( distance, heading, p.linMax, p.angMax, lin_settle_error, lin_settle_time, p.timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 // }
 
 
 void Drive::arc(float distance, float heading){
-  drive_distance(distance, heading, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_distance(distance, heading, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 void Drive::arc(float distance, float heading, float timeout){
-  drive_distance(distance, heading, lin_max, theta_max, lin_settle_error, lin_settle_time, timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_distance(distance, heading, lin_max, ang_max, lin_settle_error, lin_settle_time, timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 
 void Drive::arc(float distance, float heading, float max, float thetaMax, float timeout){
-  drive_distance(distance, heading, max, thetaMax, lin_settle_error, lin_settle_time, timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_distance(distance, heading, max, thetaMax, lin_settle_error, lin_settle_time, timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 void Drive::move(float distance, float max_voltage) {
-  drive_distance(distance, getAbsTheta(), max_voltage, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_distance(distance, getAbsTheta(), max_voltage, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 void Drive::move(float distance, float max_voltage, float timeout) {
-  drive_distance(distance, getAbsTheta(), max_voltage, theta_max, lin_settle_error, lin_settle_time, timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_distance(distance, getAbsTheta(), max_voltage, ang_max, lin_settle_error, lin_settle_time, timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 void Drive::move(float distance, float max_voltage, float settleError, float settleTime, float timeout) {
-  drive_distance(distance, getAbsTheta(), max_voltage, theta_max, settleError, settleTime, timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_distance(distance, getAbsTheta(), max_voltage, ang_max, settleError, settleTime, timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::drive_distance(float distance, float heading, float lin_max, float theta_max){
-  drive_distance(distance, heading, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::drive_distance(float distance, float heading, float lin_max, float ang_max){
+  drive_distance(distance, heading, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::drive_distance(float distance, float heading, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout){
-  drive_distance(distance, heading, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::drive_distance(float distance, float heading, float lin_max, float ang_max, float lin_settle_error, float lin_settle_time, float lin_timeout){
+  drive_distance(distance, heading, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::drive_distance(float distance, float heading, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti){
-  pid pid_lin(distance, lin_kp, lin_ki, lin_kd, lin_starti, lin_settle_error, lin_settle_time, lin_timeout);
-  pid pid_theta(reduce_negative_180_to_180(heading - getAbsTheta()), theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::drive_distance(float distance, float heading, float lin_max, float ang_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_ksi, float ang_kp, float ang_ki, float ang_kd, float ang_ksi){
+  pid pid_lin(distance, lin_kp, lin_ki, lin_kd, lin_ksi, lin_settle_error, lin_settle_time, lin_timeout);
+  pid pid_theta(reduce_negative_180_to_180(heading - getAbsTheta()), ang_kp, ang_ki, ang_kd, ang_ksi);
   float startAvgPosition = (getLeftPos() + getRightPos()) / 2.0;
   float avgPosition = startAvgPosition;
 
@@ -292,7 +292,7 @@ void Drive::drive_distance(float distance, float heading, float lin_max, float t
     float heading_output = pid_theta.calc(theta_error);
 
     drive_output = clamp(drive_output, -lin_max, lin_max);
-    heading_output = clamp(heading_output, -theta_max, theta_max);
+    heading_output = clamp(heading_output, -ang_max, ang_max);
 
     //auto accelStart = std::chrono::high_resolution_clock::now();
 
@@ -321,11 +321,11 @@ void Drive::drive_distance(float distance, float heading, float lin_max, float t
  */
 
 void Drive::leftSwing(float angle){
-  leftSwing(angle, swing_max, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
+  leftSwing(angle, swing_max, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_ksi);
 }
 
-void Drive::leftSwing(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
-  pid swingPID(reduce_negative_180_to_180(angle - getAbsTheta()), swing_kp, swing_ki, swing_kd, swing_starti, swing_settle_error, swing_settle_time, swing_timeout);
+void Drive::leftSwing(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_ksi){
+  pid swingPID(reduce_negative_180_to_180(angle - getAbsTheta()), swing_kp, swing_ki, swing_kd, swing_ksi, swing_settle_error, swing_settle_time, swing_timeout);
   while(swingPID.is_settled() == false){
     // float absHeading = getAbsTheta();
     float error = reduce_negative_180_to_180(angle - getAbsTheta());
@@ -339,11 +339,11 @@ void Drive::leftSwing(float angle, float swing_max, float swing_settle_error, fl
 }
 
 void Drive::rightSwing(float angle){
-  rightSwing(angle, swing_max, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
+  rightSwing(angle, swing_max, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_ksi);
 }
 
-void Drive::rightSwing(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
-  pid swingPID(reduce_negative_180_to_180(angle - getAbsTheta()), swing_kp, swing_ki, swing_kd, swing_starti, swing_settle_error, swing_settle_time, swing_timeout);
+void Drive::rightSwing(float angle, float swing_max, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_ksi){
+  pid swingPID(reduce_negative_180_to_180(angle - getAbsTheta()), swing_kp, swing_ki, swing_kd, swing_ksi, swing_settle_error, swing_settle_time, swing_timeout);
   while(swingPID.is_settled() == false){
     // float absHeading = getAbsTheta();
     float error = reduce_negative_180_to_180(angle - getAbsTheta());
@@ -470,21 +470,21 @@ float Drive::get_Y_position(){
  */
 
 void Drive::drive_to_point(float X_position, float Y_position){
-  drive_to_point(X_position, Y_position, lin_min, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_to_point(X_position, Y_position, lin_min, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float theta_max){
-  drive_to_point(X_position, Y_position, lin_min, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float ang_max){
+  drive_to_point(X_position, Y_position, lin_min, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout){
-  drive_to_point(X_position, Y_position, lin_min, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float ang_max, float lin_settle_error, float lin_settle_time, float lin_timeout){
+  drive_to_point(X_position, Y_position, lin_min, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti){
-  pid drivePID(hypot(X_position-get_X_position(),Y_position-get_Y_position()), lin_kp, lin_ki, lin_kd, lin_starti, lin_settle_error, lin_settle_time, lin_timeout);
+void Drive::drive_to_point(float X_position, float Y_position, float lin_min, float lin_max, float ang_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_ksi, float ang_kp, float ang_ki, float ang_kd, float ang_ksi){
+  pid drivePID(hypot(X_position-get_X_position(),Y_position-get_Y_position()), lin_kp, lin_ki, lin_kd, lin_ksi, lin_settle_error, lin_settle_time, lin_timeout);
   float start_angle_deg = to_deg(atan2(X_position-get_X_position(),Y_position-get_Y_position()));
-  pid headingPID(start_angle_deg-getAbsTheta(), theta_kp, theta_ki, theta_kd, theta_starti);
+  pid headingPID(start_angle_deg-getAbsTheta(), ang_kp, ang_ki, ang_kd, ang_ksi);
   bool line_settled = false;
   bool prev_line_settled = is_line_settled(X_position, Y_position, start_angle_deg, get_X_position(), get_Y_position());
   while(!drivePID.is_settled()){
@@ -504,7 +504,7 @@ void Drive::drive_to_point(float X_position, float Y_position, float lin_min, fl
     if (drive_error<lin_settle_error) { heading_output = 0; }
 
     drive_output = clamp(drive_output, -fabs(heading_scale_factor)*lin_max, fabs(heading_scale_factor)*lin_max);
-    heading_output = clamp(heading_output, -theta_max, theta_max);
+    heading_output = clamp(heading_output, -ang_max, ang_max);
 
     drive_output = clamp_min_voltage(drive_output, lin_min);
 
@@ -533,26 +533,26 @@ void Drive::drive_to_point(float X_position, float Y_position, float lin_min, fl
  */
 
 void Drive::drive_to_pose(float X_position, float Y_position, float angle){
-  drive_to_pose(X_position, Y_position, angle, boomerang_lead, boomerang_setback, lin_min, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_to_pose(X_position, Y_position, angle, boomerang_lead, boomerang_setback, lin_min, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 void Drive::drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min){
-  drive_to_pose(X_position, Y_position, angle, lead, setback, lin_min, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  drive_to_pose(X_position, Y_position, angle, lead, setback, lin_min, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float theta_max){
-  drive_to_pose(X_position, Y_position, angle, lead, setback, lin_min, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float ang_max){
+  drive_to_pose(X_position, Y_position, angle, lead, setback, lin_min, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 
-void Drive::drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout){
-  drive_to_pose(X_position, Y_position, angle, lead, setback, lin_min, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float ang_max, float lin_settle_error, float lin_settle_time, float lin_timeout){
+  drive_to_pose(X_position, Y_position, angle, lead, setback, lin_min, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti){
+void Drive::drive_to_pose(float X_position, float Y_position, float angle, float lead, float setback, float lin_min, float lin_max, float ang_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_ksi, float ang_kp, float ang_ki, float ang_kd, float ang_ksi){
   float target_distance = hypot(X_position-get_X_position(),Y_position-get_Y_position());
-  pid drivePID(target_distance, lin_kp, lin_ki, lin_kd, lin_starti, lin_settle_error, lin_settle_time, lin_timeout);
-  pid headingPID(to_deg(atan2(X_position-get_X_position(),Y_position-get_Y_position()))-getAbsTheta(), theta_kp, theta_ki, theta_kd, theta_starti);
+  pid drivePID(target_distance, lin_kp, lin_ki, lin_kd, lin_ksi, lin_settle_error, lin_settle_time, lin_timeout);
+  pid headingPID(to_deg(atan2(X_position-get_X_position(),Y_position-get_Y_position()))-getAbsTheta(), ang_kp, ang_ki, ang_kd, ang_ksi);
   bool line_settled = is_line_settled(X_position, Y_position, angle, get_X_position(), get_Y_position());
   bool prev_line_settled = is_line_settled(X_position, Y_position, angle, get_X_position(), get_Y_position());
   bool crossed_center_line = false;
@@ -589,7 +589,7 @@ void Drive::drive_to_pose(float X_position, float Y_position, float angle, float
     float heading_output = headingPID.calc(heading_error);
 
     drive_output = clamp(drive_output, -fabs(heading_scale_factor)*lin_max, fabs(heading_scale_factor)*lin_max);
-    heading_output = clamp(heading_output, -theta_max, theta_max);
+    heading_output = clamp(heading_output, -ang_max, ang_max);
 
     drive_output = clamp_min_voltage(drive_output, lin_min);
 
@@ -611,19 +611,19 @@ void Drive::drive_to_pose(float X_position, float Y_position, float angle, float
  */
 
 void Drive::turn_to_point(float X_position, float Y_position){
-  turn_to_point(X_position, Y_position, 0, turn_max, ang_settle_error, ang_settle_time, ang_timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+  turn_to_point(X_position, Y_position, 0, turn_max, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }
 
 void Drive::turn_to_point(float X_position, float Y_position, float extra_angle_deg){
-  turn_to_point(X_position, Y_position, extra_angle_deg, turn_max, ang_settle_error, ang_settle_time, ang_timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+  turn_to_point(X_position, Y_position, extra_angle_deg, turn_max, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }
 
-void Drive::turn_to_point(float X_position, float Y_position, float extra_angle_deg, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout){
-  turn_to_point(X_position, Y_position, extra_angle_deg, turn_max, ang_settle_error, ang_settle_time, ang_timeout, turn_kp, ang_ki, ang_kd, ang_starti);
+void Drive::turn_to_point(float X_position, float Y_position, float extra_angle_deg, float turn_max, float turn_settle_error, float turn_settle_time, float turn_timeout){
+  turn_to_point(X_position, Y_position, extra_angle_deg, turn_max, turn_settle_error, turn_settle_time, turn_timeout, turn_kp, turn_ki, turn_kd, turn_ksi);
 }
 
-void Drive::turn_to_point(float X_position, float Y_position, float extra_angle_deg, float turn_max, float ang_settle_error, float ang_settle_time, float ang_timeout, float turn_kp, float ang_ki, float ang_kd, float ang_starti){
-  pid turnPID(reduce_negative_180_to_180(to_deg(atan2(X_position-get_X_position(),Y_position-get_Y_position())) - getAbsTheta()), turn_kp, ang_ki, ang_kd, ang_starti, ang_settle_error, ang_settle_time, ang_timeout);
+void Drive::turn_to_point(float X_position, float Y_position, float extra_angle_deg, float turn_max, float turn_settle_error, float turn_settle_time, float turn_timeout, float turn_kp, float turn_ki, float turn_kd, float turn_ksi){
+  pid turnPID(reduce_negative_180_to_180(to_deg(atan2(X_position-get_X_position(),Y_position-get_Y_position())) - getAbsTheta()), turn_kp, turn_ki, turn_kd, turn_ksi, turn_settle_error, turn_settle_time, turn_timeout);
   while(turnPID.is_settled() == false){
     float error = reduce_negative_180_to_180(to_deg(atan2(X_position-get_X_position(),Y_position-get_Y_position())) - getAbsTheta() + extra_angle_deg);
     float output = turnPID.calc(error);
@@ -646,24 +646,24 @@ void Drive::turn_to_point(float X_position, float Y_position, float extra_angle_
  */
 
 void Drive::holonomic_drive_to_pose(float X_position, float Y_position){
-  holonomic_drive_to_pose(X_position, Y_position, getAbsTheta(), lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  holonomic_drive_to_pose(X_position, Y_position, getAbsTheta(), lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
 void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float angle){
-  holonomic_drive_to_pose(X_position, Y_position, angle, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+  holonomic_drive_to_pose(X_position, Y_position, angle, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float theta_max){
-  holonomic_drive_to_pose(X_position, Y_position, angle, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float ang_max){
+  holonomic_drive_to_pose(X_position, Y_position, angle, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout){
-  holonomic_drive_to_pose(X_position, Y_position, angle, lin_max, theta_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_starti, theta_kp, theta_ki, theta_kd, theta_starti);
+void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float ang_max, float lin_settle_error, float lin_settle_time, float lin_timeout){
+  holonomic_drive_to_pose(X_position, Y_position, angle, lin_max, ang_max, lin_settle_error, lin_settle_time, lin_timeout, lin_kp, lin_ki, lin_kd, lin_ksi, ang_kp, ang_ki, ang_kd, ang_ksi);
 }
 
-void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float theta_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_starti, float theta_kp, float theta_ki, float theta_kd, float theta_starti){
-  pid drivePID(hypot(X_position-get_X_position(),Y_position-get_Y_position()), lin_kp, lin_ki, lin_kd, lin_starti, lin_settle_error, lin_settle_time, lin_timeout);
-  pid turnPID(angle-getAbsTheta(), theta_kp, theta_ki, theta_kd, theta_starti, ang_settle_error, ang_settle_time, ang_timeout);
+void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float angle, float lin_max, float ang_max, float lin_settle_error, float lin_settle_time, float lin_timeout, float lin_kp, float lin_ki, float lin_kd, float lin_ksi, float ang_kp, float ang_ki, float ang_kd, float ang_ksi){
+  pid drivePID(hypot(X_position-get_X_position(),Y_position-get_Y_position()), lin_kp, lin_ki, lin_kd, lin_ksi, lin_settle_error, lin_settle_time, lin_timeout);
+  pid turnPID(angle-getAbsTheta(), ang_kp, ang_ki, ang_kd, ang_ksi, turn_settle_error, turn_settle_time, turn_timeout);
   while( !(drivePID.is_settled() && turnPID.is_settled()) ){
     float drive_error = hypot(X_position-get_X_position(),Y_position-get_Y_position());
     float turn_error = reduce_negative_180_to_180(angle-getAbsTheta());
@@ -672,7 +672,7 @@ void Drive::holonomic_drive_to_pose(float X_position, float Y_position, float an
     float turn_output = turnPID.calc(turn_error);
 
     drive_output = clamp(drive_output, -lin_max, lin_max);
-    turn_output = clamp(turn_output, -theta_max, theta_max);
+    turn_output = clamp(turn_output, -ang_max, ang_max);
 
     float heading_error = atan2(Y_position-get_Y_position(), X_position-get_X_position());
 

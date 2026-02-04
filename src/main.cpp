@@ -11,15 +11,8 @@ using namespace vex;
 using namespace std;
 competition Competition;
 
-/**
- * Function before autonomous. It prints the current auton number on the screen
- * and tapping the screen cycles the selected auton by 1. Add anything else you
- * may need, like resetting pneumatic components. You can rename these autons to
- * be more descriptive, if you like.
- */
-
-//int auton = 0;
 bool auto_started = false;
+int auton = -1; //int auton = 0;
 
 void telemetry() {
     while (1) {
@@ -52,22 +45,21 @@ void pre_auton() {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
     //default_constants();
-    thread TLM = thread(telemetry);
-    
-    imu.calibrate(3000);
-    wait(3000, msec);
+    // thread TLM = thread(telemetry);
+    // thread batteryUpdate = thread(batteryCheck);
+    // batteryUpdate.setPriority(1);
+
+    cont.Screen.clearScreen(); cont.Screen.setCursor(1, 1); cont.Screen.print("IMU Calibrating...");
 
     optic.setLight(ledState::on);
     optic.setLightPower(100);
     optic.objectDetectThreshold(10);
-}
+    
+    imu.calibrate(3000);
+    wait(3000, msec);
 
-/**
- * Auton function, which runs the selected auton. Case 0 is the default,
- * and will run in the brain screen goes untouched during preauton. Replace
- * drive_test(), for example, with your own auton function you created in
- * autons.cpp and declared in autons.h.
- */
+    os.menuCONFIG();
+}
 
 void autonomous(void) {
     l.resetPosition();
@@ -84,76 +76,46 @@ void autonomous(void) {
     // chassis.set_turn_constants(12, 0.37, 0.03, 3.1, 15); // 120-180s
     chassis.setTurn(12, 0.37, 0.03, 3.1, 15); // 45-90
     //chassis.set_turn_constants(12, 0.37, 0.03, 2.9, 5); // smaller than 30
+
+    if (auton == 0) {} // left 6+3
+    else if (auton == 1) {} 
+    else if (auton == 2) {} // right 6+3
+    else if (auton == 3) {} // solo awp
+    else if (auton == 4) {} // left 9
     
     //autoLSAWP();
-    auto_left_4_5();
+    // auto_left_4_5();
     //autoRight();
     //autoSKILLS();
 }
 
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              User Control Task                            */
-/*                                                                           */
-/*  This task is used to control your robot during the user control phase of */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
-
 bool enableIntake = true;
-bool filtering = false;        // filter mode active?
-int filterTimer = 200;           // when to stop filtering
+// void filter_blue() { get_block("blue"); }
+// void filter_red() { get_block("red"); }
 
-// start filter eject, but non-blocking
-void filter_block() {
-    filtering = true;
-    filterTimer = timer::system(); // run for 1.5s
-}
+bool scraperState = false;
+bool descorerState = false;
 
-void get_block(std::string targetColor) {
-    // initialization
-    optic.integrationTime(5);
-    while (1) {
-        optic.setLight(ledState::on);
-        optic.setLightPower(100);
-    
-        if (optic.isNearObject()) {
-            if (optic.isNearObject()) {
-                // if we are on blue team
-                if (targetColor == "red") {
-                    if ((optic.hue() > RED_LOWER_LIM) && (optic.hue() < RED_UPPER_LIM)) {
-                        if ((optic.hue() > RED_LOWER_LIM) && (optic.hue() < RED_UPPER_LIM)) {
-                            filter_block();
-                        }
-                    }
-                }
-
-                // if we are on red team
-                else if (targetColor == "blue") {
-                    if ((optic.hue() > BLUE_LOWER_LIM) && (optic.hue() < BLUE_UPPER_LIM)) {
-                        if ((optic.hue() > BLUE_LOWER_LIM) && (optic.hue() < BLUE_UPPER_LIM)) {
-                            filter_block();
-                        }
-                    }
-                }
-            }
-        } else {
-
-        }
-    }
-}
-
-void filter_blue() { get_block("blue"); }
-void filter_red() { get_block("red"); }
-
+// Most global initializations occur in config.cpp
 int main() {
     // Set up callbacks for autonomous and driver control periods.
     Competition.autonomous(autonomous);
     Competition.drivercontrol(usercontrol);
 
-    controller1.ButtonY.pressed(ctrlScraper);
-    controller1.ButtonL2.pressed(ctrlDescorer);
+    // cont.ButtonY.pressed(ctrl_scraper);
+    // cont.ButtonL2.pressed(ctrl_descorer);
+
+    // scraper
+    auto ctrl_scraper = []() { 
+        scraperState = !scraperState;
+        scraper.set(scraperState); };
+    cont.ButtonY.pressed(ctrl_scraper);
+    
+    // descorer
+    auto ctrl_descorer = []() {
+        descorerState = !descorerState;
+        descorer.set(descorerState); };
+    cont.ButtonL2.pressed(ctrl_descorer);
 
     // Run the pre-autonomous function.
     pre_auton();
@@ -161,5 +123,7 @@ int main() {
     // Prevent main from exiting with an infinite loop.
     while (true) {
         wait(100, msec);
+        // Sleep the task for a short amount of time to
+        // prevent wasted resources.
     }
 }

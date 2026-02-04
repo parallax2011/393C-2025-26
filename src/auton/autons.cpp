@@ -98,7 +98,7 @@ void auto_left_4_5() {
     // score 4 blocks on mid goal
     auto task0 = []() { 
         wait(650, msec); moveIntake(-8, -8); wait(150, msec); hood.set(true); }; thread t_task0 = thread(task0);
-    chassis.theta_kd = 1.8, chassis.arc(-29.5, -124.8, 12, 6.4, 1600); wait(600, msec); //29.5
+    chassis.ang_kd = 1.8, chassis.arc(-29.5, -124.8, 12, 6.4, 1600); wait(600, msec); //29.5
 
     // get 3 blocks in match loader
     moveIntake(0, 0);
@@ -127,7 +127,7 @@ void auto_left_4_5() {
 // void autoLeft() {
 //     std::cout << "-----------------------------------------" << std::endl;
 //     chassis.move(33);//33
-//     chassis.ang_timeout = 2000; chassis.turn(-88.5); std::cout << "Angle: " << imu.rotation() << endl; //kTurn(95, 12, .33, .035, 3.1, 15);
+//     chassis.turn_timeout = 2000; chassis.turn(-88.5); std::cout << "Angle: " << imu.rotation() << endl; //kTurn(95, 12, .33, .035, 3.1, 15);
 //     auto taskA = []() {scraper.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA); wait(800, msec);
 //     chassis.move(7.5, 5, 700);
 //     wait(100, msec);
@@ -156,7 +156,7 @@ void auto_left_4_5() {
 //     // match loader
 //     std::cout << "-----------------------------------------" << std::endl;
 //     chassis.move(33);//33
-//     chassis.ang_timeout = 2000; chassis.turn(88.5); std::cout << "Angle: " << imu.rotation() << endl; //kTurn(95, 12, .33, .035, 3.1, 15);
+//     chassis.turn_timeout = 2000; chassis.turn(88.5); std::cout << "Angle: " << imu.rotation() << endl; //kTurn(95, 12, .33, .035, 3.1, 15);
 //     auto taskA = []() {scraper.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA); wait(300, msec);
 //     chassis.move(6, 6, 700);
     

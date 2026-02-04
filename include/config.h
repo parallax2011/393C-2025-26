@@ -6,7 +6,7 @@ extern brain Brain;
 //extern motor LeftFront;
 
 //Add your devices below, and don't forget to do the same in config.cpp:
-extern controller controller1;
+extern controller cont;
 
 // motors/motor groups
 extern motor lf;

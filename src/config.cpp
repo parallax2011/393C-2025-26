@@ -26,7 +26,7 @@ Drive chassis(ZERO_TRACKER_NO_ODOM, // drive setup
 );
 
 brain Brain;
-controller controller1;
+controller cont;
 
 #define RED ratio36_1
 #define GREEN ratio18_1
@@ -72,6 +72,8 @@ digital_out scraper = digital_out(Brain.ThreeWirePort.A);
 digital_out hood = digital_out(Brain.ThreeWirePort.B);
 digital_out trapdoor = digital_out(Brain.ThreeWirePort.G);
 digital_out descorer = digital_out(Brain.ThreeWirePort.C);
+
+ACCESS_OS os;
 
 void vexcodeInit( void ) {
   // nothing to initialize

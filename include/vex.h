@@ -36,6 +36,7 @@
 #include "controls.h"
 #include "calc/optical.h"
 #include "constants.h"
+#include "menu.h"
 
 class Drive;
 extern Drive chassis;
@@ -46,6 +47,8 @@ using namespace std;
 void filter_block();
 void filter_red();
 void filter_blue();
+
+ACCESS_OS os;
 
 #define waitUntil(condition)                                                   \
   do {                                                                         \

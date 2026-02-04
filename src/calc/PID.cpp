@@ -1,32 +1,32 @@
 #include "vex.h"
 
-pid::pid(float error, float kp, float ki, float kd, float starti) :
+pid::pid(float error, float kp, float ki, float kd, float ksi) :
     error(error),
     kp(kp),
     ki(ki),
     kd(kd),
-    starti(starti)
+    ksi(ksi)
 {};
 
-pid::pid(float error, float kp, float ki, float kd, float starti, 
+pid::pid(float error, float kp, float ki, float kd, float ksi, 
          float settle_error, float settle_time, float timeout):
     error(error),
     kp(kp),
     ki(ki),
     kd(kd),
-    starti(starti),
+    ksi(ksi),
     settle_error(settle_error),
     settle_time(settle_time),
     timeout(timeout)
 {};
 
-pid::pid(float error, float kp, float ki, float kd, float starti, 
+pid::pid(float error, float kp, float ki, float kd, float ksi, 
          float settle_error, float settle_time, float timeout, float update_period):
     error(error),
     kp(kp),
     ki(ki),
     kd(kd),
-    starti(starti),
+    ksi(ksi),
     settle_error(settle_error),
     settle_time(settle_time),
     timeout(timeout),
@@ -34,7 +34,7 @@ pid::pid(float error, float kp, float ki, float kd, float starti,
 {};
 
 float pid::calc(float error) {
-    if (fabs(error) < starti) {
+    if (fabs(error) < ksi) {
         accumulated_error += error;
     }
     // Checks if the error has crossed 0, and if it has, it eliminates the integral term.
