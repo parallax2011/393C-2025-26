@@ -11,30 +11,19 @@ using namespace vex;
 using namespace std;
 competition Competition;
 
+ACCESS_OS os;
+
 bool auto_started = false;
 int auton = -1; //int auton = 0;
 
 void telemetry() {
     while (1) {
-
         // cout << "Accel time:         " << accelTime.count() << "s" << endl; 
         // cout << "Oscil time:       " << "s" << endl;
         // cout << "INIT overshoot:    " << initOvershoot << "in" << endl;
         // cout << "ESSE overshoot:    " << esseOvershoot << "in" << endl;
-
         cout << "Pos [in]:     " << (chassis.getLeftPos() + chassis.getRightPos()) / 2 << std::endl;
         cout << "Ang [deg]:    " << imu.rotation() << std::endl << std::endl;
-        // std::cout << "drive:            " << (l.position(deg) + r.position(deg))/2 << std::endl;
-        // std::cout << "intake:           " << intake.temperature(celsius) << std::endl << std::endl;
-        // std::cout << "Position [deg]:         " << intake.position(deg) << std::endl;
-        // std::cout << "Velocity [pct]:         " << intake.velocity(pct) << std::endl;
-        // std::cout << "Current [pct]:          " << intake.current(pct) << std::endl;
-        // std::cout << "Power [watt]:           " << intake.power(watt) << std::endl;
-        // std::cout << "Torque [Nm]:            " << intake.torque(Nm) << std::endl;
-        // std::cout << "Efficiency [pct]:       " << intake.efficiency(pct) << std::endl;
-        // std::cout << "Voltage [volt]:         " << intake.voltage() << std::endl;
-        // std::cout << std::endl << std::endl;
-
         // std::cout << "velocity:         " << (l.voltage() + r.voltage()) / 2 << std::endl << std::endl;
         // wait(500, msec);
         wait(500, msec);
@@ -49,7 +38,7 @@ void pre_auton() {
     // thread batteryUpdate = thread(batteryCheck);
     // batteryUpdate.setPriority(1);
 
-    cont.Screen.clearScreen(); cont.Screen.setCursor(1, 1); cont.Screen.print("IMU Calibrating...");
+    // cont.Screen.clearScreen(); cont.Screen.setCursor(1, 1);
 
     optic.setLight(ledState::on);
     optic.setLightPower(100);
@@ -58,7 +47,7 @@ void pre_auton() {
     imu.calibrate(3000);
     wait(3000, msec);
 
-    os.menuCONFIG();
+    //os.menuCONFIG();
 }
 
 void autonomous(void) {
@@ -77,7 +66,14 @@ void autonomous(void) {
     chassis.setTurn(12, 0.37, 0.03, 3.1, 15); // 45-90
     //chassis.set_turn_constants(12, 0.37, 0.03, 2.9, 5); // smaller than 30
 
-    if (auton == 0) {} // left 6+3
+    //If configuration[1] is 0 (Front row), 1 (Back row), or 2 (Skills), run the correct auton
+    // if (os.getValues(POSITION) == LEFT) { 
+    //     if (os.getValues(POINTS) == LG6_3) { auto_left_4_5(); }
+    // }
+
+    auton = 0;
+
+    if (auton == 0) { autoLeft_6_3(); } // left 6+3
     else if (auton == 1) {} 
     else if (auton == 2) {} // right 6+3
     else if (auton == 3) {} // solo awp

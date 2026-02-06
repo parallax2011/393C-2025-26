@@ -81,6 +81,40 @@ void autoLeft_4_5() {
 
 }
 
+void vectors() {
+    std::cout << "-----------" << std::endl;
+    std::cout << "Theta: " << imu.rotation() << std::endl;
+    std::cout << "Pos: " << (chassis.getLeftPos() + chassis.getRightPos()) / 2 << std::endl;
+    l.resetPosition(); r.resetPosition();
+}
+
+void autoLeft_6_3() {
+    // settings
+    std::cout << "-----------------------------------------" << std::endl;
+
+    Brain.Timer.reset();
+
+    // get first 3 blocks
+    intake();
+    chassis.lin_settle_error = 3; chassis.lin_settle_time = 80; 
+    chassis.arc(33, -30, 4, 3, 2000); vectors(); 
+
+    // get 2 blocks under goal
+    chassis.lin_settle_error = 1.5; chassis.lin_settle_time = 300; chassis.ang_kd = 1.5;
+    chassis.arc(23.2, -60, 3, 7, 3000); vectors(); //21.65 dist vector
+    // chassis.lin_settle_error = 1; chassis.lin_settle_time = 300; chassis.move(3); vectors();
+    // chassis.leftSwing(-50);
+    wait(500, msec);
+
+    // score 4 blocks on mid goal
+    auto task0 = []() { 
+        wait(650, msec); trapdoor.set(true); moveIntake(-12, 12); wait(150, msec); }; thread t_task0 = thread(task0);
+    chassis.ang_kd = 1.8, chassis.arc(-29.5, -124.8, 12, 6.4, 1600); wait(600, msec); //29.5
+
+
+    std::cout << "Time: " << Brain.Timer.time(sec) << std::endl;
+    
+}
 
 void auto_left_4_5() {
     // settings

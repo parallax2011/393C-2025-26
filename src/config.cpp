@@ -28,9 +28,9 @@ Drive chassis(ZERO_TRACKER_NO_ODOM, // drive setup
 brain Brain;
 controller cont;
 
-#define RED ratio36_1
-#define GREEN ratio18_1
-#define BLUE ratio6_1
+#define REDG ratio36_1
+#define GREENG ratio18_1
+#define BLUEG ratio6_1
 
 #define REVERSE_L true
 #define REVERSE_R false
@@ -49,15 +49,15 @@ controller cont;
 #define PORT_DISTANCE PORT4
 
 // motors/motor groups
-motor lf = motor(PORT_LF, BLUE, true); //t
-motor lm = motor(PORT_LM, BLUE, false); //f
-motor lb = motor(PORT_LB, BLUE, true); //t
-motor rf = motor(PORT_RF, BLUE, true); //t
-motor rm = motor(PORT_RM, BLUE, false); //f
-motor rb = motor(PORT_RB, BLUE, false); //f
+motor lf = motor(PORT_LF, BLUEG, true); //t
+motor lm = motor(PORT_LM, BLUEG, false); //f
+motor lb = motor(PORT_LB, BLUEG, true); //t
+motor rf = motor(PORT_RF, BLUEG, true); //t
+motor rm = motor(PORT_RM, BLUEG, false); //f
+motor rb = motor(PORT_RB, BLUEG, false); //f
 
-motor inf = motor(PORT_INTAKE_FRONT, BLUE, false);
-motor inb = motor(PORT_INTAKE_BACK, BLUE, false);
+motor inf = motor(PORT_INTAKE_FRONT, BLUEG, false);
+motor inb = motor(PORT_INTAKE_BACK, BLUEG, false);
 
 motor_group l = motor_group(lf, lm, lb);
 motor_group r = motor_group(rf, rm, rb);
@@ -73,7 +73,7 @@ digital_out hood = digital_out(Brain.ThreeWirePort.B);
 digital_out trapdoor = digital_out(Brain.ThreeWirePort.G);
 digital_out descorer = digital_out(Brain.ThreeWirePort.C);
 
-ACCESS_OS os;
+// ACCESS_OS os;
 
 void vexcodeInit( void ) {
   // nothing to initialize

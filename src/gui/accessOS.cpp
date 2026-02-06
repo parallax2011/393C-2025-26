@@ -257,7 +257,7 @@ void ACCESS_OS::statusHUD() //v2 needs no overloading values
 ------------------------------------------------------------------------------------------------------*/
 void ACCESS_OS::menuCONFIG() 
 {
-	//menuCONFIG v2019.3.14.15.20
+	//menuCONFIG v2026.2.4.1.14
 	//Use D-pad to move the cursor around the menu to select settings.
 	//It automatically saves the settings as you change between options (left/right buttons).
 	//Press A button to exit menu.

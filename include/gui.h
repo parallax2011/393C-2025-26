@@ -46,25 +46,20 @@ void preAuton();
 #define modeError			3
 
 //Define more robot info for easy coding
+#define LEFT						0
+#define RIGHT						1
+#define SKILLS		  		        2
+
+#define LG6_3                       0
+#define LG9                         1
+#define LG7                         2   
+
 #define RED							0
 #define BLUE						1
-#define FRONT						0
-#define BACK						1
-#define SKILLS		  		2
-#define BRAIN						3
-#define ONE							0
-#define THREE						1
-#define FOUR						2
-#define FIVE						3
-#define SIX							4
-#define SEVEN						5
-#define EIGHT						6
-#define EIGHTTEEN				7
-#define FOURTY					8
-#define COLOR						0
-#define POSITION				1
-#define POINTS					2
 
+#define COLOR						0
+#define POSITION				    1
+#define POINTS					    2
 
 /*------------------------------------------------------------------------------------------------------
 [CLASS] ACCESS_OS > Defines class functions
@@ -107,17 +102,17 @@ private:
 	//1D array for displaying the menu types
 	std::string menuTypes[maxMenus] =
 	{
-		"Color: ",
-		"Pos: ",
-		"Pnts: "
+		" Pos: ",
+		" Pnts: ",
+		" Team: "
 	};
 
 	//2D array for displaying the menu options
 	std::string menuOptions[maxMenus][maxOptions] =
 	{
-		{ "Red", "Blue" }, //If "" doesn't work, try "NULL"
-		{ "Front", "Back",	"Skills",	"Brain" },
-		{ "1", "3", "4", "5", "6", "7", "8",  "18", "40" }
+		{ "Left", "Right", "Skills" }, //If "" doesn't work, try "NULL"
+		{ "6+3", "LG9",	"LG7" },
+		{ "Red", "Blue" }
 	};
 public:
 	ACCESS_OS();											//???

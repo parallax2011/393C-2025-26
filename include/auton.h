@@ -11,3 +11,5 @@ void autoLeft_4_5();
 void autoLeft();
 
 void auto_left_4_5();
+
+void autoLeft_6_3();

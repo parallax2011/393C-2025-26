@@ -33,4 +33,6 @@ extern digital_out descorer;
 extern digital_out hood;
 extern digital_out trapdoor;
 
+// ACCESS_OS os;
+
 void  vexcodeInit( void );
