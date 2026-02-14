@@ -1,14 +1,16 @@
-Files overview:
+# Files overview:
 
-main.cpp - preAuton, auton, main functions
-config.cpp - configuring robot devices
-ROBOT.cpp - chassis constructor and drive functions (ex. PID, FPS)
+* main.cpp - preAuton, auton, main functions
+* config.cpp - configuring robot devices
+* ROBOT.cpp - chassis constructor and drive functions (ex. PID, FPS)
 
-controls/controls.cpp - macros, chassis control, intake control, optical sorting
-controls/driver.cpp - usercontrol function and settings
+* controls/controls.cpp - macros, chassis control, intake control, optical sorting
+* controls/driver.cpp - usercontrol function and settings
 
-calc/PID.cpp - PID class and constructor
-calc/FPS.cpp - odom class and constructor (Field Positioning System) -- taken from JAR 2775V template
-calc/calc.cpp - utility functions (ex. normalizing angles and converting pct -> voltage)
+* calc/PID.cpp - PID class and constructor
+* calc/FPS.cpp - odom class and constructor (Field Positioning System) -- taken from JAR 2775V template
+* calc/calc.cpp - utility functions (ex. normalizing angles and converting pct -> voltage)
 
-auton folder - different kinds of autos
+* auton folder - different kinds of autos
+
+* constants.h - universal constants used for robot (ex. wheel diameter, hues for red blocks)
