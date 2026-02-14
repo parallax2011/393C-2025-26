@@ -5,8 +5,6 @@
 class Drive;
 extern Drive chassis;
 
-void default_constants() {}
-
 void autoSKILLS() {
 
     // match loader 1
@@ -65,7 +63,7 @@ void autoSKILLS() {
     wait(300, msec); //prev1500 and got 41pts
     chassis.move(26, 3); // potentially add more
     wait(1500, msec);
-    // auto task7 = []() { hood.set(true); wait(300, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task7 = thread(task7);
+    // auto task7 = []() { hood.set(true); wait(300, msec); gate.set(true); moveIntake(-12, -12); }; thread t_task7 = thread(task7);
     // chassis.lin_max = 6; chassis.setLin(12, 1, 0, 7, 0); chassis.setAng(6, 0.4, 0, 1, 0); chassis.lin_timeout = 2000; chassis.move(-28.75);//91.5
     // wait(1800, msec);
     chassis.move(-10); 

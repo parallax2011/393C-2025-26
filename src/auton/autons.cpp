@@ -88,6 +88,26 @@ void vectors() {
     l.resetPosition(); r.resetPosition();
 }
 
+void autoRight4C() {
+    // settings
+    std::cout << "-----------------------------------------" << std::endl;
+    Brain.Timer.reset();
+
+    // intake 3 blocks <- match loader
+    chassis.move(33.5); vectors();
+    chassis.turn(88.5); vectors();
+    scraper.set(true); intake(); wait(300, msec);
+    chassis.move(10, 12, 1000); vectors();
+
+    // score 4 blocks -> long goal
+    auto taskA = []() { 
+        wait(400, msec); hood.set(true); wait(1000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA);
+    chassis.move(-27.5); vectors();
+
+    // push 4 blocks -> control zone
+
+}
+
 void autoLeft_6_3() {
     // settings
     std::cout << "-----------------------------------------" << std::endl;

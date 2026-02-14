@@ -9,9 +9,14 @@ void usercontrol(void) {
 
     optic.setLight(ledState::on);
     optic.setLightPower(100);
-    optic.objectDetectThreshold(50);
+    optic.objectDetectThreshold(100);
 
-    thread tColorSortAlg1 = thread(filterRed);
+    auto csr = []() { 
+        detectBlock("red");
+    }; thread t_csr = thread(csr);
+    // auto csb = []() { 
+    //     detectBlock("blue");
+    // }; thread t_csb = thread(csb);
 
     while (1) {
         ctrls();

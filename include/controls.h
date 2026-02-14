@@ -15,3 +15,5 @@ void antiJam();
 
 void ctrls();
 void usercontrol(void);
+
+void detectBlock(std::string oppsColor);

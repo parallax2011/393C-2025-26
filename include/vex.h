@@ -36,7 +36,7 @@
 #include "controls.h"
 #include "calc/optical.h"
 #include "constants.h"
-#include "gui.h"
+// #include "gui.h"
 
 class Drive;
 extern Drive chassis;

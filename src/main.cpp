@@ -11,7 +11,7 @@ using namespace vex;
 using namespace std;
 competition Competition;
 
-ACCESS_OS os;
+//ACCESS_OS os;
 
 bool auto_started = false;
 int auton = -1; //int auton = 0;
@@ -42,7 +42,7 @@ void pre_auton() {
 
     optic.setLight(ledState::on);
     optic.setLightPower(100);
-    optic.objectDetectThreshold(10);
+    // optic.objectDetectThreshold(100);
     
     imu.calibrate(3000);
     wait(3000, msec);
@@ -71,13 +71,13 @@ void autonomous(void) {
     //     if (os.getValues(POINTS) == LG6_3) { auto_left_4_5(); }
     // }
 
-    auton = 0;
+    auton = 4;
 
     if (auton == 0) { autoLeft_6_3(); } // left 6+3
     else if (auton == 1) {} 
     else if (auton == 2) {} // right 6+3
     else if (auton == 3) {} // solo awp
-    else if (auton == 4) {} // left 9
+    else if (auton == 4) { autoRight4C(); } // left 9
     
     //autoLSAWP();
     // auto_left_4_5();
@@ -85,7 +85,7 @@ void autonomous(void) {
     //autoSKILLS();
 }
 
-bool enableIntake = true;
+// bool enableIntake = true;
 // void filter_blue() { get_block("blue"); }
 // void filter_red() { get_block("red"); }
 
