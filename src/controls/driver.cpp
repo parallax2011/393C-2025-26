@@ -12,7 +12,7 @@ void usercontrol(void) {
     optic.objectDetectThreshold(100);
 
     auto csr = []() { 
-        detectBlock("red");
+        detectBlock("blue");
     }; thread t_csr = thread(csr);
     // auto csb = []() { 
     //     detectBlock("blue");
