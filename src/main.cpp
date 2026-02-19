@@ -71,13 +71,14 @@ void autonomous(void) {
     //     if (os.getValues(POINTS) == LG6_3) { auto_left_4_5(); }
     // }
 
-    auton = 4;
+    auton = 5;
 
     if (auton == 0) { autoLeft_6_3(); } // left 6+3
     else if (auton == 1) {} 
     else if (auton == 2) {} // right 6+3
     else if (auton == 3) {} // solo awp
     else if (auton == 4) { autoRight4C(); } // left 9
+    else if (auton == 5) { r7(); }
     
     //autoLSAWP();
     // auto_left_4_5();

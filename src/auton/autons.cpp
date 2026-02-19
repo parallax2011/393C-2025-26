@@ -119,6 +119,18 @@ void autoRight4C() {
     chassis.drive_stop(brake);
 }
 
+void r7() {
+
+    // settings
+    chassis.setLin(12, 1, 0, 7.275, 0); chassis.setLinExits(1.5, 150, 2000); chassis.setAng(6, 0.4, 0, 1.5, 0);
+    chassis.setTurn(12, 0.37, 0.03, 2.9, 15); chassis.setTurnExits(1, 200, 2000);
+
+    // intake 3 blocks
+    intake();
+    chassis.setAng(6, 0.4, 0, 1, 0);
+    chassis.arc(28, 10, 6, 8, 3000); vectors();
+}
+
 void autoLeft_6_3() {
     // settings
     std::cout << "-----------------------------------------" << std::endl;
