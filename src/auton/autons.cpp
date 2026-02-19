@@ -127,8 +127,38 @@ void r7() {
 
     // intake 3 blocks
     intake();
-    chassis.setAng(6, 0.4, 0, 1, 0);
-    chassis.arc(28, 10, 6, 8, 3000); vectors();
+    chassis.arc(36, 57, 4, 1.75, 2000); vectors();
+    wait(500, msec);
+    descorer.set(true);
+
+    // match loader
+    chassis.turn(-45); vectors();
+    chassis.move(-31); vectors();
+    chassis.turn_kd = 3.1; chassis.turn(182); vectors(); chassis.turn_kd = 2.9; 
+    scraper.set(true); vectors();
+    chassis.move(17.6, 12); vectors();
+    wait(500, msec);
+
+    // score on long goal
+    auto taskA = []() { 
+        wait(400, msec); hood.set(true); wait(650, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA);
+    chassis.move(-28); vectors();
+    wait(2000, msec);
+
+    // push 7 blocks in
+    chassis.set_heading(0); scraper.set(false);
+    chassis.setAng(6, 0.4, 0, 2.6, 0); chassis.arc(12.9, 90, 12, 10, 3000); 
+    float dist1 = dist.objectDistance(inches);
+    chassis.move(29.5 - dist1); vectors();
+    moveIntake(0, 0); hood.set(false); trapdoor.set(false); vectors();
+    chassis.turn(177); vectors(); descorer.set(false);
+    chassis.move(25, 12);
+    wait(200, msec);
+    chassis.drive_stop(brake);
+
+
+    // chassis.setAng(1, 1, 0, 2.6, 0);
+    // chassis.arc(28, 23, 5, 0.75, 5000); vectors();
 }
 
 void autoLeft_6_3() {

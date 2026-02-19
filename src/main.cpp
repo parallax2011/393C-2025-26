@@ -34,7 +34,7 @@ void pre_auton() {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
     //default_constants();
-    // thread TLM = thread(telemetry);
+    //telemetry();
     // thread batteryUpdate = thread(batteryCheck);
     // batteryUpdate.setPriority(1);
 

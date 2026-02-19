@@ -45,8 +45,8 @@ controller cont;
 #define PORT_INTAKE_BACK PORT9
 
 #define PORT_IMU PORT6
-#define PORT_OPTICAL PORT10
-#define PORT_DISTANCE PORT4
+#define PORT_OPTICAL PORT4
+#define PORT_DISTANCE PORT10
 
 // motors/motor groups
 motor lf = motor(PORT_LF, BLUEG, true); //t
