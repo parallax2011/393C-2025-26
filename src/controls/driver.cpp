@@ -7,6 +7,8 @@ void usercontrol(void) {
     inf.setMaxTorque(100, percent);
     inb.setMaxTorque(100, percent);
 
+    descorer.set(true); //represents auton timed out
+
     optic.setLight(ledState::on);
     optic.setLightPower(100);
     optic.objectDetectThreshold(100);

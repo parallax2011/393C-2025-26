@@ -133,26 +133,26 @@ void r7() {
 
     // match loader
     chassis.turn(-45); vectors();
-    chassis.move(-31); vectors();
-    chassis.turn_kd = 3.1; chassis.turn(182); vectors(); chassis.turn_kd = 2.9; 
+    chassis.move(-31); vectors(); //-31
+    chassis.turn_kd = 3.1; chassis.turn(184); vectors(); chassis.turn_kd = 2.9; //kd1 = 3.1
     scraper.set(true); vectors();
     chassis.move(17.6, 12); vectors();
     wait(500, msec);
 
     // score on long goal
     auto taskA = []() { 
-        wait(400, msec); hood.set(true); wait(650, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA);
-    chassis.move(-28); vectors();
-    wait(2000, msec);
+        wait(400, msec); hood.set(true); wait(400, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA);
+    chassis.move(-28); vectors(); //          up here 650
+    wait(2800, msec);
 
     // push 7 blocks in
     chassis.set_heading(0); scraper.set(false);
     chassis.setAng(6, 0.4, 0, 2.6, 0); chassis.arc(12.9, 90, 12, 10, 3000); 
     float dist1 = dist.objectDistance(inches);
-    chassis.move(29.5 - dist1); vectors();
+    chassis.move(29.85 - dist1); vectors();
     moveIntake(0, 0); hood.set(false); trapdoor.set(false); vectors();
     chassis.turn(177); vectors(); descorer.set(false);
-    chassis.move(25, 12);
+    chassis.move(32, 12);//25
     wait(200, msec);
     chassis.drive_stop(brake);
 
