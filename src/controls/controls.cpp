@@ -5,15 +5,15 @@
 //-------------------------------------------------------------------------
 bool active = false;
 
-void ctrlScraper() {
-    active = !active;
-    scraper.set(active);
-}
+// void ctrlScraper() {
+//     active = !active;
+//     scraper.set(active);
+// }
 
-void ctrlDescorer() {
-    active = !active;
-    descorer.set(active);
-}
+// void ctrlDescorer() {
+//     active = !active;
+//     descorer.set(active);
+// }
 
 //-------------------------------------------------------------------------
 // chassis control
@@ -47,6 +47,8 @@ enum IntakeState { //intake constructor
     SCORE_LOW,
     SCORE_MID,
     SCORE_LONG,
+    SORT,
+    INDEX,
     ANTI_JAM
 };
 
@@ -58,6 +60,10 @@ void scoreLowGoal() { hood.set(false); trapdoor.set(false); moveIntake(12, 12); 
 void scoreMidGoal() { hood.set(false); trapdoor.set(true); moveIntake(-12, 12); }
 void scoreLongGoal() { hood.set(true); trapdoor.set(true); moveIntake(-12, -12); }
 void antiJam() { moveIntake(0, -12); }
+
+void mansort() { hood.set(false); trapdoor.set(false); moveIntake(-12, 12); }
+
+void indexer() { hood.set(true); trapdoor.set(true); moveIntake(-12, 1); }
 
 //-------------------------------------------------------------------------
 // optical detection in intake control
@@ -97,12 +103,24 @@ void detectBlock(std::string oppsColor) {
     }
 }
 
-void filterBlue() { detectBlock("blue"); }
-void filterRed() { detectBlock("red"); }
+void detectStop() {
+    if (optic.isNearObject()) {
+        if ((optic.hue() > RED_LOWER_LIM) && (optic.hue() < RED_UPPER_LIM)) {
+            wait(100, msec);
+            intakeLock = true;
+        } else if ((optic.hue() > BLUE_LOWER_LIM) && (optic.hue() < BLUE_UPPER_LIM)) {
+            intakeLock = false;
+        }
+    }
+}
+
+// void filterBlue() { detectBlock("blue"); }
+// void filterRed() { detectBlock("red"); }
 
 void ctrls() {
     bool R1 = cont.ButtonR1.pressing(); bool R2 = cont.ButtonR2.pressing(); bool L1 = cont.ButtonL1.pressing();
-    bool B = cont.ButtonB.pressing(); bool X = cont.ButtonX.pressing();
+    bool A = cont.ButtonA.pressing(); bool X = cont.ButtonX.pressing();
+    bool B = cont.ButtonB.pressing();
 
     // chassis
     arcade();
@@ -114,12 +132,16 @@ void ctrls() {
     else if (R2 and L1)        intakeState = SCORE_MID;
     else if (R2 and !L1)       intakeState = SCORE_LONG;
     else if (X)                intakeState = ANTI_JAM;
+    else if (A)                intakeState = INDEX;
+    else if (B)                intakeState = SORT;
     else                       intakeState = INTAKE_OFF;
 
     // intake decision tree
     if (intakeLock) {
         ejectTime += ejectInterval; //add more time to ejection if opp block still detected
-        moveIntake(-12, 12); //
+        
+        if (auton != 8) { moveIntake(-12, 12); 
+        } else { moveIntake(0, 0); }
 
         if (ejectTime >= maxEjectLimit) {
             intakeLock = false;
@@ -138,6 +160,10 @@ void ctrls() {
                 scoreLongGoal(); break;
             case ANTI_JAM:
                 antiJam(); break;
+            case SORT:
+                mansort(); break;
+            case INDEX:
+                indexer(); break;
             default:
                 moveIntake(0,0);
         }

@@ -17,3 +17,7 @@ void autoLeft_6_3();
 void autoRight4C();
 
 void r7();
+
+void l4_3();
+
+void autoSKILLS2();

@@ -34,7 +34,7 @@
 #include "calc/PID.h"
 #include "auton.h"
 #include "controls.h"
-#include "calc/optical.h"
+// #include "calc/optical.h"
 #include "constants.h"
 // #include "gui.h"
 
@@ -43,6 +43,8 @@ extern Drive chassis;
 
 //using namespace vex;
 using namespace std;
+
+extern int auton;
 
 void filter_block();
 void filter_red();

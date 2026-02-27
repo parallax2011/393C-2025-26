@@ -45,7 +45,7 @@ controller cont;
 #define PORT_INTAKE_BACK PORT9
 
 #define PORT_IMU PORT6
-#define PORT_OPTICAL PORT4
+#define PORT_OPTICAL PORT16
 #define PORT_DISTANCE PORT10
 
 // motors/motor groups

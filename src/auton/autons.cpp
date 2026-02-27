@@ -133,10 +133,10 @@ void r7() {
 
     // match loader
     chassis.turn(-45); vectors();
-    chassis.move(-31); vectors(); //-31
+    chassis.move(-29); vectors(); //-31
     chassis.turn_kd = 3.1; chassis.turn(184); vectors(); chassis.turn_kd = 2.9; //kd1 = 3.1
     scraper.set(true); vectors();
-    chassis.move(17.6, 12); vectors();
+    chassis.move(17.3, 12); vectors();
     wait(500, msec);
 
     // score on long goal
@@ -153,12 +153,59 @@ void r7() {
     moveIntake(0, 0); hood.set(false); trapdoor.set(false); vectors();
     chassis.turn(177); vectors(); descorer.set(false);
     chassis.move(32, 12);//25
+    chassis.turn(157);
     wait(200, msec);
     chassis.drive_stop(brake);
 
 
     // chassis.setAng(1, 1, 0, 2.6, 0);
     // chassis.arc(28, 23, 5, 0.75, 5000); vectors();
+}
+
+void l4_3() {
+    // settings
+    chassis.setLin(12, 1, 0, 7.275, 0); chassis.setLinExits(1.5, 150, 2000); chassis.setAng(6, 0.4, 0, 1.5, 0);
+    chassis.setTurn(12, 0.37, 0.03, 2.9, 15); chassis.setTurnExits(1, 200, 2000);
+
+    // intake 3 blocks
+    intake();
+    chassis.move(-30.5); vectors(); //-29.75
+    chassis.turn(88.5); vectors();
+    scraper.set(true); wait(300, msec);
+    chassis.lin_timeout = 1100; chassis.move(13, 3.75); vectors();
+    // wait(500, msec);
+
+    // score on long goal
+    auto taskA = []() { 
+        wait(400, msec); hood.set(true); wait(400, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_taskA = thread(taskA);
+    chassis.move(-28); vectors(); //      up here 650
+    scraper.set(false);
+    wait(1500, msec);
+    chassis.set_heading(0); imu.resetHeading(); imu.resetRotation();
+
+    // get 3 blocks on field
+    chassis.turn(-97);
+    intake();
+    auto taskB = []() { 
+        wait(100, msec); scraper.set(true); }; thread t_taskB = thread(taskB);
+    chassis.move(15.7);
+
+    // score 3 blocks on mid goal
+    chassis.turn_kd = 3; chassis.turn(44);
+    scoreMidGoal();
+    chassis.move(-16);
+    wait(2000, msec);
+
+    // push 4 blocks in control
+    // chassis.arc(27.5, 0, 12, 4, 5000);
+    chassis.setLinExits(1.75, 70, 1000); chassis.move(33);
+    chassis.setTurnExits(3, 75, 1000); chassis.turn(-2);
+    l.setStopping(brake); r.setStopping(brake);
+    chassis.move(-21);
+    wait(100, msec);
+    chassis.drive_stop(brake);
+
+
 }
 
 void autoLeft_6_3() {

@@ -14,7 +14,7 @@ competition Competition;
 //ACCESS_OS os;
 
 bool auto_started = false;
-int auton = -1; //int auton = 0;
+int auton = -1; //int auton = 0.;
 
 void telemetry() {
     while (1) {
@@ -42,7 +42,7 @@ void pre_auton() {
 
     optic.setLight(ledState::on);
     optic.setLightPower(100);
-    // optic.objectDetectThreshold(100);
+    optic.objectDetectThreshold(100);
     
     imu.calibrate(3000);
     wait(3000, msec);
@@ -71,14 +71,19 @@ void autonomous(void) {
     //     if (os.getValues(POINTS) == LG6_3) { auto_left_4_5(); }
     // }
 
-    auton = 5;
+    auton = 8;
 
     if (auton == 0) { autoLeft_6_3(); } // left 6+3
     else if (auton == 1) {} 
-    else if (auton == 2) {} // right 6+3
+    else if (auton == 2) { l4_3(); } // right 6+3
     else if (auton == 3) {} // solo awp
     else if (auton == 4) { autoRight4C(); } // left 9
     else if (auton == 5) { r7(); }
+    else if (auton == 8) { autoSKILLS(); }
+
+    // chassis.move(10);
+    // l.stop();
+    // r.stop();
     
     //autoLSAWP();
     // auto_left_4_5();
@@ -93,6 +98,16 @@ void autonomous(void) {
 bool scraperState = false;
 bool descorerState = false;
 
+void ctrlScraper() {
+    scraperState = !scraperState;
+    scraper.set(scraperState);
+}
+
+void ctrlDescorer() {
+    descorerState = !descorerState;
+    descorer.set(descorerState);
+}
+
 // Most global initializations occur in config.cpp
 int main() {
     // Set up callbacks for autonomous and driver control periods.
@@ -103,16 +118,10 @@ int main() {
     // cont.ButtonL2.pressed(ctrl_descorer);
 
     // scraper
-    auto ctrl_scraper = []() { 
-        scraperState = !scraperState;
-        scraper.set(scraperState); };
-    cont.ButtonY.pressed(ctrl_scraper);
+    cont.ButtonY.pressed(ctrlScraper);
     
     // descorer
-    auto ctrl_descorer = []() {
-        descorerState = !descorerState;
-        descorer.set(descorerState); };
-    cont.ButtonL2.pressed(ctrl_descorer);
+    cont.ButtonL2.pressed(ctrlDescorer);
 
     // Run the pre-autonomous function.
     pre_auton();

@@ -7,6 +7,8 @@ void ctrlKillSwitch();
 void arcade();
 void moveIntake(int inlv, int inuv);
 
+void detectStop();
+
 void intake();
 void scoreLowGoal();
 void scoreMidGoal();
