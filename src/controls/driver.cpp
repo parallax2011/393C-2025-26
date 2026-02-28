@@ -1,7 +1,7 @@
 #include <vex.h>
 
-void filterBlue() { detectBlock("blue"); }
-void filterRed() { detectBlock("red"); }
+void filterBlue() { detectBlock('b'); }
+void filterRed() { detectBlock('r'); }
 
 void usercontrol(void) {
 
@@ -17,10 +17,11 @@ void usercontrol(void) {
     // optic.setLightPower(100);
     // optic.objectDetectThreshold(100);
 
-    thread t_csr = thread(detectStop);
-    // auto csb = []() {
-    //     detectBlock("blue");
-    // }; thread t_csb = thread(csb);
+    auto cs = []() { detectBlock('r'); }; 
+    thread tcs = thread(cs);
+
+    //thread t_csr = thread(detectStop);
+    // thread cst = thread(autoSort);
 
     while (1) {
         ctrls();

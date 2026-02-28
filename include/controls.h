@@ -15,7 +15,11 @@ void scoreMidGoal();
 void scoreLongGoal();
 void antiJam();
 
+void autoSort();
+
 void ctrls();
 void usercontrol(void);
 
-void detectBlock(std::string oppsColor);
+void detectBlock(char oppsColor);
+
+void detectOrig();

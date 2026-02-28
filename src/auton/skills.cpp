@@ -81,14 +81,14 @@ void autoSKILLS() {
 
     // match loader 1
     std::cout << "-----------------------------------------" << std::endl;
-    chassis.move(30.5); std::cout << (chassis.getLeftPos() + chassis.getRightPos()) / 2 << std::endl; //31.8
+    chassis.move(31.2); std::cout << (chassis.getLeftPos() + chassis.getRightPos()) / 2 << std::endl; //31.8
     chassis.setTurn(12, 0.37, 0.03, 2.9, 15); chassis.setTurnExits(1, 200, 2000);
     chassis.turn(-88.5);
     intake();
     //chassis.kTurn(-88.5, 12, .33, .035, 3.1, 15);
     std::cout << std::endl << "After turn:       " << imu.rotation() << " " << chassis.getAbsTheta() - 360 << std::endl;
     auto task0 = []() {scraper.set(true); }; thread t_task0 = thread(task0);
-    auto taskcs0 = []() { detectandstop(); }; thread t_taskcs0 = thread(taskcs0);
+    //auto taskcs0 = []() { detectandstop(); }; thread t_taskcs0 = thread(taskcs0);
     wait(600, msec);
     chassis.lin_timeout = 2000; chassis.lin_max = 6; chassis.arc(10, -87.8);
     wait(1500, msec);
@@ -96,7 +96,7 @@ void autoSKILLS() {
 
     // first scoring on long goal 1
     chassis.move(-10.5);
-    t_taskcs0.interrupt();
+    //t_taskcs0.interrupt();
     scraper.set(false);
     wait(200, msec);
     chassis.turn(0); std::cout << imu.rotation() << " " << chassis.getAbsTheta() - 360 << std::endl;
@@ -118,13 +118,13 @@ void autoSKILLS() {
     // match loader 2
     t_task3.interrupt();
     intake();
-    auto taskcs1 = []() { detectandstop(); }; thread t_taskcs1 = thread(taskcs1);
+    //auto taskcs1 = []() { detectandstop(); }; thread t_taskcs1 = thread(taskcs1);
     auto task4 = []() {wait(50, msec); scraper.set(true); }; thread t_task4 = thread(task4);
     chassis.move(30, 4); // potentially add more //29.2
     wait(1500, msec);
 
     // 2nd score on long goal 1
-    t_taskcs1.interrupt();
+    //t_taskcs1.interrupt();
     auto task5 = []() { hood.set(true); wait(1000, msec); trapdoor.set(true); moveIntake(-12, -12); }; thread t_task5 = thread(task5);
     chassis.move(-28.75, 6);
     wait(1300, msec);//1800

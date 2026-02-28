@@ -72,7 +72,7 @@ int ejectTime = 0; //time since opp block detected
 int ejectInterval = 20; //added to each ejection cycle
 int maxEjectLimit = 525; //default if this is exceeded
 
-void detectBlock(std::string oppsColor) {
+void detectBlock(char oppsColor) {
 
     optic.integrationTime(5);
     bool prevDetected = false;
@@ -83,9 +83,9 @@ void detectBlock(std::string oppsColor) {
 
         if (optic.isNearObject()) {
 
-            if (oppsColor == "red") {
+            if (oppsColor == 'r') {
                 detectedOpp = (optic.hue() > RED_LOWER_LIM) && (optic.hue() < RED_UPPER_LIM); //constants.h
-            } else if (oppsColor == "blue") {
+            } else if (oppsColor == 'b') {
                 detectedOpp = (optic.hue() > BLUE_LOWER_LIM) && (optic.hue() < BLUE_UPPER_LIM);
             }
 
@@ -101,6 +101,45 @@ void detectBlock(std::string oppsColor) {
 
         wait(10, msec);
     }
+}
+
+void detectOrig() {
+    while (1) {
+        if (optic.isNearObject()) {
+            break;
+        }
+    }
+    double hue = optic.hue();
+
+    if (hue > RED_LOWER_LIM && hue < RED_UPPER_LIM) {
+        opp = 'b';
+    }
+    else if (hue > BLUE_LOWER_LIM && hue < BLUE_UPPER_LIM) {
+        opp = 'r';
+    }
+    else {
+        opp = 'n';
+    }
+}
+
+void autoSort() {
+    // while (1) {
+    //     if (optic.isNearObject()) {
+    //         break;
+    //     }
+    // }
+    // double hue = optic.hue();
+    // std::string opps = "none";
+
+    // if (hue > RED_LOWER_LIM && hue < RED_UPPER_LIM) {
+    //     opps = "blue";
+    // } else if (hue > BLUE_LOWER_LIM && hue < BLUE_UPPER_LIM) {
+    //     opps = "red";
+    // }
+
+    // while (1) {
+    //     detectBlock(opps);
+    // }
 }
 
 void detectStop() {

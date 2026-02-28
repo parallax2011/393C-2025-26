@@ -15,6 +15,7 @@ competition Competition;
 
 bool auto_started = false;
 int auton = -1; //int auton = 0.;
+char opp = 'n';
 
 void telemetry() {
     while (1) {
@@ -47,7 +48,13 @@ void pre_auton() {
     imu.calibrate(3000);
     wait(3000, msec);
 
+    opp = 'n';
     //os.menuCONFIG();
+}
+
+void csTestAuto() {
+    moveIntake(-12, -12);
+    detectOrig();
 }
 
 void autonomous(void) {
@@ -71,7 +78,7 @@ void autonomous(void) {
     //     if (os.getValues(POINTS) == LG6_3) { auto_left_4_5(); }
     // }
 
-    auton = 8;
+    auton = 11;
 
     if (auton == 0) { autoLeft_6_3(); } // left 6+3
     else if (auton == 1) {} 
@@ -80,6 +87,7 @@ void autonomous(void) {
     else if (auton == 4) { autoRight4C(); } // left 9
     else if (auton == 5) { r7(); }
     else if (auton == 8) { autoSKILLS(); }
+    else if (auton == 11) { csTestAuto(); }
 
     // chassis.move(10);
     // l.stop();

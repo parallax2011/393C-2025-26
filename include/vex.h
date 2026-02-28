@@ -45,6 +45,7 @@ extern Drive chassis;
 using namespace std;
 
 extern int auton;
+extern char opp;
 
 void filter_block();
 void filter_red();
